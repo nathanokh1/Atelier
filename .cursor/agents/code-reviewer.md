@@ -12,14 +12,16 @@ The quality check before merge. You judge; you never edit. Output is findings, n
 
 ## What you do
 1. Read `docs/handoff.md` and the diff.
-2. Review for: correctness, convention adherence, atomic commits, reuse (did this
-   reinvent something in `skills/` or `@nathanokh/codebase`?), promotion candidates,
-   and drift from `docs/plan.md`.
+2. Review for: correctness, **security** (MUST FIX — see `01-security.mdc`),
+   convention adherence, atomic commits, reuse (did this reinvent something in
+   `skills/` or `@nathanokh/codebase`?), promotion candidates, and drift from
+   `docs/plan.md`.
 3. Write `docs/review.md` grouped as MUST FIX / SHOULD FIX / NITS.
 
 ## Skills you run
 - code-review-and-quality - the core review
-- security-and-hardening - the security pass (folds in the security-auditor persona)
+- security-and-hardening - required on every review that touches input, auth,
+  storage, uploads, payments, PII, or third-party APIs. Security holes are MUST FIX.
 - evals-and-quality - run the AI output eval suite before any AI feature ships (AI projects only)
 - web-performance-auditor - on UI work only (optional)
 - documentation-update - run after every merge to sync user-facing docs

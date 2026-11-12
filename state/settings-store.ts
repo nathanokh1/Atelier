@@ -19,12 +19,18 @@ interface SettingsState {
   lockAspectRatio: boolean;
   /** Show lightweight grid guides on the canvas. */
   showGuides: boolean;
+  /** Show pixel rulers along the top/left edges of the canvas. */
+  showRulers: boolean;
+  /** Snap layers to canvas edges/center while dragging with the Move tool. */
+  snapToGuides: boolean;
   setShowTooltips: (v: boolean) => void;
   setTooltipDelay: (v: number) => void;
   setPixelSnap: (v: boolean) => void;
   setFitCanvasToFirstImport: (v: boolean) => void;
   setLockAspectRatio: (v: boolean) => void;
   setShowGuides: (v: boolean) => void;
+  setShowRulers: (v: boolean) => void;
+  setSnapToGuides: (v: boolean) => void;
 }
 
 export const useSettings = create<SettingsState>()(
@@ -36,12 +42,16 @@ export const useSettings = create<SettingsState>()(
       fitCanvasToFirstImport: true,
       lockAspectRatio: true,
       showGuides: false,
+      showRulers: true,
+      snapToGuides: true,
       setShowTooltips: (v) => set({ showTooltips: v }),
       setTooltipDelay: (v) => set({ tooltipDelay: v }),
       setPixelSnap: (v) => set({ pixelSnap: v }),
       setFitCanvasToFirstImport: (v) => set({ fitCanvasToFirstImport: v }),
       setLockAspectRatio: (v) => set({ lockAspectRatio: v }),
       setShowGuides: (v) => set({ showGuides: v }),
+      setShowRulers: (v) => set({ showRulers: v }),
+      setSnapToGuides: (v) => set({ snapToGuides: v }),
     }),
     { name: "cpe-settings" },
   ),

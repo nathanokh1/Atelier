@@ -3,7 +3,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ImagePlus, Copy, Scissors, ClipboardPaste, Trash2 } from "lucide-react";
 import { useEditor } from "@/state/editor-store";
+import { useSettings } from "@/state/settings-store";
 import { ContextMenu, ContextMenuItem } from "@/components/ui/ContextMenu";
+import { Rulers } from "./Rulers";
 
 /** Hosts the PixiJS canvas and translates DOM input into engine tool events. */
 export function CanvasViewport() {
@@ -65,6 +67,7 @@ export function CanvasViewport() {
     (e: React.PointerEvent) => {
       const engine = useEditor.getState().engine;
       if (!engine) return;
+      engine.setSnapEnabled(useSettings.getState().snapToGuides);
       (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
       const p = toCanvasPoint(e);
       engine.pointerDown({ canvasX: p.x, canvasY: p.y, shiftKey: e.shiftKey, altKey: e.altKey });
@@ -151,6 +154,8 @@ export function CanvasViewport() {
           setMenu({ x: e.clientX, y: e.clientY });
         }}
       />
+
+      {ready && <Rulers />}
 
       {menu && (
         <ContextMenu x={menu.x} y={menu.y} items={canvasMenuItems()} onClose={() => setMenu(null)} />

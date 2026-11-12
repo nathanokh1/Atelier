@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useEditor } from "@/state/editor-store";
+import { makeBrushTip, imageToBrushTip } from "@/core";
 import { Slider } from "@/components/ui/Slider";
 import { cn } from "@/components/ui/cn";
 
@@ -30,6 +31,14 @@ export function PaintOptionsBar() {
   const [hardness, setHardness] = useState(0.6);
   const [flow, setFlow] = useState(0.85);
   const [spacing, setSpacing] = useState(0.12);
+  const [tipName, setTipName] = useState("round");
+  const tipFileRef = useRef<HTMLInputElement>(null);
+  const [importedTip, setImportedTip] = useState<HTMLCanvasElement | null>(null);
+
+  const builtinTips = useMemo(
+    () => ({ spray: makeBrushTip("spray"), chalk: makeBrushTip("chalk") }),
+    [],
+  );
 
   const isPaint = activeTool === "brush" || activeTool === "pencil" || activeTool === "eraser";
   const isRetouch = activeTool === "clone" || activeTool === "heal";
@@ -57,6 +66,23 @@ export function PaintOptionsBar() {
     setSpacing(p.spacing);
     setOpacity(p.opacity);
     setPaintStyle({ hardness: p.hardness, flow: p.flow, spacing: p.spacing, opacity: p.opacity });
+  };
+
+  const selectTip = (name: string, tip: HTMLCanvasElement | null) => {
+    setTipName(name);
+    setPaintStyle({ tip, tipName: name });
+  };
+
+  const onImportTip = (file: File) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const tip = imageToBrushTip(img);
+      setImportedTip(tip);
+      selectTip("imported", tip);
+    };
+    img.src = url;
   };
 
   return (
@@ -113,8 +139,52 @@ export function PaintOptionsBar() {
             ))}
           </div>
         )}
+
+        {activeTool === "brush" && (
+          <div className="flex items-center gap-1 border-l border-panel-border pl-2">
+            <span className="text-[10px] uppercase tracking-wide text-ink-faint">Tip</span>
+            <TipButton label="Round" active={tipName === "round"} onClick={() => selectTip("round", null)} />
+            <TipButton label="Spray" active={tipName === "spray"} onClick={() => selectTip("spray", builtinTips.spray)} />
+            <TipButton label="Chalk" active={tipName === "chalk"} onClick={() => selectTip("chalk", builtinTips.chalk)} />
+            {importedTip && (
+              <TipButton label="Custom" active={tipName === "imported"} onClick={() => selectTip("imported", importedTip)} />
+            )}
+            <button
+              onClick={() => tipFileRef.current?.click()}
+              className="rounded-md border border-panel-border bg-panel-sunken px-2 py-1 text-[11px] text-ink-dim hover:border-accent/50 hover:text-ink"
+            >
+              Import…
+            </button>
+            <input
+              ref={tipFileRef}
+              type="file"
+              accept="image/*"
+              hidden
+              onChange={(e) => {
+                if (e.target.files?.[0]) onImportTip(e.target.files[0]);
+                e.target.value = "";
+              }}
+            />
+          </div>
+        )}
       </div>
     </div>
+  );
+}
+
+function TipButton({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        "rounded-md border px-2 py-1 text-[11px]",
+        active
+          ? "border-accent/60 bg-accent/20 text-ink"
+          : "border-panel-border bg-panel-sunken text-ink-dim hover:border-accent/50 hover:text-ink",
+      )}
+    >
+      {label}
+    </button>
   );
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ChevronDown, Wand2 } from "lucide-react";
 import { FilterKind } from "@/core";
 import { useEditor } from "@/state/editor-store";
 import { Slider } from "@/components/ui/Slider";
@@ -47,9 +47,27 @@ const FILTERS: { kind: FilterKind; label: string }[] = [
 export function AdjustmentsPanel() {
   const activeLayerId = useEditor((s) => s.activeLayerId);
   const applyAdjustments = useEditor((s) => s.applyAdjustments);
+  const previewAdjustments = useEditor((s) => s.previewAdjustments);
   const applyFilter = useEditor((s) => s.applyFilter);
+  const autoEnhance = useEditor((s) => s.autoEnhance);
   const [open, setOpen] = useState(false);
   const [adj, setAdj] = useState<Adj>(NEUTRAL);
+
+  // Live GPU preview: push the current slider stack to the renderer. Clear when
+  // neutral, when the panel closes, or when the active layer changes.
+  const isNeutral = JSON.stringify(adj) === JSON.stringify(NEUTRAL);
+  useEffect(() => {
+    if (!activeLayerId) return;
+    if (!open) {
+      previewAdjustments(null);
+      return;
+    }
+    previewAdjustments(isNeutral ? null : adj);
+  }, [adj, open, activeLayerId, isNeutral, previewAdjustments]);
+
+  useEffect(() => {
+    return () => previewAdjustments(null);
+  }, [activeLayerId, previewAdjustments]);
 
   if (!activeLayerId) return null;
 
@@ -68,6 +86,12 @@ export function AdjustmentsPanel() {
 
       {open && (
         <div className="space-y-3 px-4 pb-3">
+          <button
+            onClick={() => void autoEnhance()}
+            className="flex w-full items-center justify-center gap-1.5 rounded-md border border-accent/40 bg-accent/15 py-1.5 text-xs font-medium text-ink hover:bg-accent/25"
+          >
+            <Wand2 size={13} /> Auto-enhance
+          </button>
           {SLIDERS.map(({ key, label, min, max, step }) => (
             <div key={key}>
               <div className="mb-1 flex justify-between text-[11px] text-ink-dim">

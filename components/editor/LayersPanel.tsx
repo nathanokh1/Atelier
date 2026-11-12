@@ -30,6 +30,7 @@ import { Tooltip } from "@/components/ui/Tooltip";
 import { ContextMenu, ContextMenuItem } from "@/components/ui/ContextMenu";
 import { cn } from "@/components/ui/cn";
 import { AdjustmentsPanel } from "./AdjustmentsPanel";
+import { AiToolsPanel } from "./AiToolsPanel";
 
 const BLEND_MODES: BlendMode[] = [
   "normal",
@@ -335,6 +336,7 @@ export function LayersPanel() {
       )}
 
       {active && active.type !== "group" && <AdjustmentsPanel />}
+      {active && active.type !== "group" && <AiToolsPanel />}
 
       <div className="flex-1 overflow-y-auto p-2">
         {layers.length === 0 && (

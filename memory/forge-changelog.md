@@ -8,6 +8,29 @@ Related: [[capability-map]] | [[backlog]]
 
 ---
 
+### 2026-07-20 14:45
+- TYPE: DECISION
+  target: Suite vision + platform stance (doc for Claude app)
+  by: builder
+  project: CreativePhotoEditor
+  reason: Approver wants a related suite (Photoshop-like → Lightroom-like → video) and asked about going Windows-native. Wrote docs/SUITE-ALIGNMENT.md for Claude-app handoff. Standing recommendation: keep TS web cores + Tauri wraps (not pure WinUI/WPF rewrites); App 2/3 may go desktop-first earlier for FS/catalog/codecs. Open Approver questions listed in that doc (brand, monorepo, App 2 cut, wrap timing).
+
+### 2026-07-19 12:45
+- TYPE: DECISION
+  target: Editor polish + Phase-3 platform + free AI track
+  by: builder
+  project: CreativePhotoEditor
+  reason: Shipped a large batch — (1) one-click auto-enhance (heuristic per-channel auto-levels + white balance); (2) History panel (jump to any point via bulk undo/redo); (3) pixel rulers + snap-to-edge/center on Move (Alt bypasses); (4) custom brush tips (Spray/Chalk + import any PNG as a tip); (5) live GPU adjustment preview via Pixi ColorMatrixFilter (non-destructive until Apply); (6) downsample-on-import to ≤4096px; (7) PWA (manifest + service worker + installable, offline app shell); (8) in-browser ML background removal + select-subject via @imgly/background-removal (ONNX/WASM, on-device, free — model cached on first use). DEFERRED (direction decision, flagged to Approver): non-destructive adjustment layers (composite-below is an architectural lift in the sprite renderer; live GPU preview covers the near-term need) and ML-assisted auto-slicer (stretch; segmentation gives one foreground mask, not per-object separation). Typecheck clean.
+
+---
+
+### 2026-07-19 11:15
+- TYPE: DECISION
+  target: Ship full editing toolset to Production (Vercel)
+  by: builder
+  project: CreativePhotoEditor
+  reason: Approver approved production ship. Local `next build` passed clean (compile + typecheck + lint). Committed 51-file batch (a35fef3) and pushed main → Vercel production deploy dpl_2SQDgBwpsXiGii9wBPs3Jk9FH16P READY (~44s build, iad1). Live + smoke-tested at https://creativephotoeditor.vercel.app/editor (aliases: creativephotoeditor.vercel.app). Prior production (c2677b1) remains rollback candidate.
+
 ### 2026-07-18 16:30
 - TYPE: DECISION
   target: Layers panel — group cascades, single-layer grouping, drag-reorder, context-menu clamp

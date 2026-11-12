@@ -127,7 +127,19 @@ If this project differs, append an override block (do not edit the defaults):
 
 ---
 
-## Step 6: Setup summary
+## Step 6: Link Linear (visual board)
+
+If Linear MCP is available and `~/.forge/config.json` has `linear.teamKey`:
+
+1. Read `docs/LINEAR_SEED.md` if present (starting point, not a contract). Else draft a lean seed from backlog/changelog and show the Approver before creating.
+2. Check workspace issue count (Linear Free = 250). Keep the seed lean.
+3. Create the Linear project in team `NOK`, milestones, labels, starter issues via Linear MCP.
+4. Write `linear.projectId` + `linear.projectUrl` (+ milestone ids) into `memory/ops/project.json`.
+5. Run `forge-open` (Hub + Linear).
+
+If Linear MCP is not signed in yet: stub `linear` in `project.json`, note it in the setup summary, and continue. Do not block setup.
+
+## Step 7: Setup summary
 
 Append to `memory/forge-changelog.md`:
 ```
@@ -140,6 +152,7 @@ Surface a short summary to the Approver:
 - Docs found and indexed (not re-loaded — indexed)
 - Stack confirmed
 - Skills pulled
+- Linear linked (URL) or deferred
 - Any conflicts or open questions needing their input
 
 ---

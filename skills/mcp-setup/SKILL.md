@@ -123,10 +123,15 @@ Add to `~/.cursor/mcp.json`:
         "@modelcontextprotocol/server-filesystem",
         "${YOUR_PROJECTS_PATH}"
       ]
+    },
+    "linear": {
+      "url": "https://mcp.linear.app/mcp"
     }
   }
 }
 ```
+
+**Linear:** OAuth when Cursor prompts — no API key in this file. One workspace team `Portfolio` (`NOK`); each Forge app is a Linear *project* inside that team.
 
 ---
 

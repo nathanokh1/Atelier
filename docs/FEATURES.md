@@ -8,6 +8,30 @@ in `CreativePhotoEditor-cursor-package/ROADMAP.md`.
 
 ---
 
+## Recently shipped — 2026-07-19
+
+Latest build cycle (editor polish + Phase-3 platform + free AI track). All items
+below are ✅ and reflected in the tables that follow:
+
+- **One-click auto-enhance** — heuristic per-channel auto-levels + white balance + gentle saturation (Adjust & Filters panel).
+- **History panel** — clock icon in the top bar; lists every command and lets you jump to any point (bulk undo/redo).
+- **Rulers + snapping** — pixel rulers (top/left) + snap layer edges/center to canvas edges/center while moving (Alt bypasses). Toggles in Settings.
+- **Custom brush tips** — Round / Spray / Chalk built-ins + import any PNG as a brush tip.
+- **Live GPU adjustment preview** — adjustment sliders preview instantly on the GPU (Pixi ColorMatrixFilter); baked non-destructively on Apply.
+- **Large-image handling** — downsample-on-import to ≤4096px (high-quality).
+- **PWA / offline** — web manifest + app icon + service worker; installable, app shell works offline after first load.
+- **Background removal** and **Select subject** — on-device, free, in-browser ML (Smart tools panel).
+
+Deferred this cycle (see notes in the tables): non-destructive adjustment
+**layers** (architectural lift; live GPU preview covers the near-term need) and
+the **ML smart slicer** (stretch).
+
+> ⚠️ ML note: background-removal / select-subject load the model library from a
+> CDN at runtime (onnxruntime-web can't be bundled by `next build`), so those two
+> features need a network connection on first use. Everything else works offline.
+
+---
+
 ## 1. Basic features (core editor)
 
 ### Documents & canvas
@@ -97,16 +121,18 @@ in `CreativePhotoEditor-cursor-package/ROADMAP.md`.
 | Text layers | ✅ | Rasterized; edit via Text options bar |
 | Text types (fonts, bold/italic, align, outline, shadow) | ✅ | Font family, weight/style, L/C/R align, outline color+width, drop shadow color+blur |
 | Vector/shape layers | ✅ | Rect / ellipse as raster shapes |
-| Non-destructive adjustment layers | 🧪 | Bigger architectural lift |
-| Filters (blur, sharpen, etc.) | 🧪 | GPU shaders via Pixi filters |
+| Non-destructive adjustment layers | 🧪 | Deferred — architectural lift (composite-below in the sprite renderer). Live GPU adjustment preview covers the common need for now |
+| Filters (blur, sharpen, etc.) | ✅ | CPU filters shipped + live GPU adjustment preview via Pixi ColorMatrixFilter (non-destructive until Apply) |
 | Masks (layer + clipping) | ✅ | Non-destructive layer mask (paint to reveal/hide, from selection, enable/apply/delete) + clip-to-below |
 | More blend modes | ✅ | Expanded set shipped |
-| Large-image handling (tiling/downsample) | 📋 | Phase 3 perf |
-| History persistence within a session | 📋 | History stack exists; no panel UI yet |
-| PWA / offline support | 📋 | Phase 3 |
-| Custom brushes / painting | 🧪 | |
-| Guides, rulers, snapping | ✅ / 📋 | Grid guides in Settings; rulers/snapping later |
-| Multiple documents / tabs | 📋 | |
+| Large-image handling (tiling/downsample) | ✅ | Downsample-on-import to ≤4096px (high-quality) so huge photos don't blow WebGL/CPU limits |
+| History persistence within a session | ✅ | History panel (clock icon) lists every command; click any point to jump (bulk undo/redo) |
+| PWA / offline support | ✅ | Web manifest + service worker (runtime cache) + installable; app shell works offline after first load |
+| Custom brushes / painting | ✅ | Presets + brush tips (Round/Spray/Chalk) + import any PNG as a brush tip |
+| Guides, rulers, snapping | ✅ | Grid guides + pixel rulers (top/left) + snap-to-edge/center while moving (Alt bypasses) |
+| Multiple documents / tabs | ✅ | Tab bar; each doc its own engine, one shared renderer |
+| Autosave + session restore | ✅ | Debounced autosave to IndexedDB; reopens tabs on reload |
+| Group eye/lock cascade to children | ✅ | Hiding/locking a group cascades to its layers |
 
 ---
 
@@ -121,20 +147,19 @@ in `CreativePhotoEditor-cursor-package/ROADMAP.md`.
 
 ---
 
-## 4. AI features (later — separate track)
+## 4. AI features (separate track)
 
-Deliberately deferred until the core editor is solid. Candidates, roughly in
-order of value/effort:
+The free, on-device tier is now live. Cloud (paid) AI remains on the roadmap.
 
 Two tiers by cost:
-- **In-browser ML (FREE, on-device)** — open models via WASM/WebGPU (transformers.js / onnxruntime-web). No API/per-use cost; only a one-time ~5–45 MB model download (cached) + the user's own CPU/GPU. Images never leave the device. Buildable now.
+- **In-browser ML (FREE, on-device)** — open models via WASM/WebGPU. No API/per-use cost; only a one-time model download (cached) + the user's own CPU/GPU. Images never leave the device. **Shipped:** background removal + select subject (@imgly/background-removal, ONNX+WASM, loaded from CDN at runtime).
 - **Cloud AI (PAID, roadmap)** — needs a backend + GPU + per-call billing + a credits/unlock system. Deferred.
 
 | Feature | Status | Tier | Notes |
 |---|---|---|---|
-| Background removal | 🔜 | In-browser ML | High value, self-contained (RMBG / U²-Net) |
-| Smart selection ("select subject") | 🔜 | In-browser ML | Same model family as bg removal |
-| Auto-adjust (one-click enhance) | 🧪 | Non-AI first | Heuristic tone/contrast before any model |
+| Background removal | ✅ | In-browser ML | @imgly/background-removal (ONNX+WASM), on-device, free; Smart tools panel |
+| Smart selection ("select subject") | ✅ | In-browser ML | Same model → subject alpha becomes a pixel selection mask |
+| Auto-adjust (one-click enhance) | ✅ | Non-AI | Heuristic per-channel auto-levels + white balance + gentle saturation (Adjust panel) |
 | Smart slicer (ML region detect) | 🧪 | In-browser ML | Improve auto-layers beyond the deterministic ~60% on arbitrary images |
 | AI analytical tools (analyze + suggest improvements) | 📋 | Cloud AI (paid) | Roadmap — Approver decision: paid → later |
 | Generative fill / inpainting | 📋 | Cloud AI (paid) | Backend + infra |

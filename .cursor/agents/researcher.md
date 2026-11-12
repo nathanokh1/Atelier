@@ -3,7 +3,7 @@ name: researcher
 description: Finds prior art, existing libraries, open-source repos, docs, and reference material before anything gets built from scratch. Use whenever a capability might already exist, before designing or implementing something non-trivial, or when the Approver asks "does this already exist". Strongly prefer reusing and adapting over rebuilding.
 model: inherit
 readonly: true
-is_background: false
+is_background: true
 ---
 
 # Researcher

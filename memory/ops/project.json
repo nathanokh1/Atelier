@@ -1,8 +1,11 @@
-﻿{
-    "name":  "CreativePhotoEditor",
-    "hub_url":  "http://127.0.0.1:8766/hub.html",
-    "path":  "C:\\Users\\Pheonix\\OneDrive\\Desktop\\Projects\\CreativePhotoEditor",
-    "initialized_at":  "2026-07-17T19:33:55.0425481Z",
-    "ops_port":  8766,
-    "mode":  "new"
+{
+  "name": "CreativePhotoEditor",
+  "hub_url": "http://127.0.0.1:8766/hub.html",
+  "path": "C:\\Users\\Pheonix\\OneDrive\\Desktop\\Projects\\CreativePhotoEditor",
+  "initialized_at": "2026-07-17T19:33:55.0425481Z",
+  "ops_port": 8766,
+  "mode": "new",
+  "linear": {
+    "lastOpenedAt": "2026-11-12T17:44:55.135Z"
+  }
 }

@@ -2,7 +2,7 @@
 name: skill-smith
 description: Detects when the team lacks a capability and either finds an existing skill to adapt or builds a new one. Use whenever a task needs a tool or capability the team does not have, when work fails for lack of a known method, or when reusable logic emerges that should become a skill. This is how the skill set grows; invoke it proactively rather than improvising around missing capabilities.
 model: inherit
-is_background: false
+is_background: true
 ---
 
 # Skill Smith

@@ -6,6 +6,7 @@ import {
   FilePlus,
   FileUp,
   FolderOpen,
+  History as HistoryIcon,
   Image as ImageIcon,
   Redo2,
   Save,
@@ -18,6 +19,7 @@ import { Tooltip } from "@/components/ui/Tooltip";
 import { cn } from "@/components/ui/cn";
 import { NewDocumentDialog } from "./NewDocumentDialog";
 import { ExportDialog } from "./ExportDialog";
+import { HistoryPanel } from "./HistoryPanel";
 
 export function TopBar({ onOpenSettings }: { onOpenSettings: () => void }) {
   const importFiles = useEditor((s) => s.importFiles);
@@ -35,6 +37,7 @@ export function TopBar({ onOpenSettings }: { onOpenSettings: () => void }) {
   const openRef = useRef<HTMLInputElement>(null);
   const [exportOpen, setExportOpen] = useState(false);
   const [newDocOpen, setNewDocOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   return (
     <header className="flex h-14 items-center gap-2 border-b border-panel-border bg-panel px-3">
@@ -134,6 +137,17 @@ export function TopBar({ onOpenSettings }: { onOpenSettings: () => void }) {
         disabled={!canRedo}
         onClick={redo}
       />
+      <div className="relative">
+        <IconButton
+          icon={<HistoryIcon size={18} />}
+          label="History"
+          description="Jump to any point in your edit history."
+          tooltipSide="bottom"
+          active={historyOpen}
+          onClick={() => setHistoryOpen((v) => !v)}
+        />
+        {historyOpen && <HistoryPanel onClose={() => setHistoryOpen(false)} />}
+      </div>
 
       <div className="ml-auto flex items-center gap-3">
         {busy && (

@@ -18,6 +18,8 @@ The implementation workhorse. You build what the plan describes, nothing more.
 
 ## Skills you run
 - incremental-implementation - the build loop
+- security-and-hardening - when the work touches input, auth, storage, uploads,
+  payments, PII, or third-party APIs. Insecure-by-default is not a complete handoff.
 - test-driven-development - tests alongside code
 - observe-and-iterate - run tests, read output, fix, repeat until green
 - debugging-and-error-recovery - when stuck after 3+ iterations

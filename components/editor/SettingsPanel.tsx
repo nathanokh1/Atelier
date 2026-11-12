@@ -56,12 +56,16 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
     fitCanvasToFirstImport,
     lockAspectRatio,
     showGuides,
+    showRulers,
+    snapToGuides,
     setShowTooltips,
     setTooltipDelay,
     setPixelSnap,
     setFitCanvasToFirstImport,
     setLockAspectRatio,
     setShowGuides,
+    setShowRulers,
+    setSnapToGuides,
   } = useSettings();
   const setLockAspect = useEditor((s) => s.setLockAspect);
   const setShowGuidesEngine = useEditor((s) => s.setShowGuides);
@@ -136,6 +140,20 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
               setShowGuides(v);
               setShowGuidesEngine(v);
             }}
+          />
+
+          <Toggle
+            label="Show rulers"
+            description="Show pixel rulers along the top and left edges of the canvas."
+            checked={showRulers}
+            onChange={setShowRulers}
+          />
+
+          <Toggle
+            label="Snap to edges"
+            description="While dragging with the Move tool, snap a layer's edges and center to the canvas edges and center. Hold Alt to bypass."
+            checked={snapToGuides}
+            onChange={setSnapToGuides}
           />
         </div>
 

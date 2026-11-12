@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -9,6 +10,12 @@ export const metadata: Metadata = {
   description:
     "A free, browser-first photo editor. Layers, move, resize, blend modes and export — no install, your images never leave your device.",
   keywords: ["photo editor", "free photo editor", "image editor", "layers", "browser editor"],
+  applicationName: "CreativePhotoEditor",
+  appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "PhotoEditor" },
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export const viewport: Viewport = {
@@ -20,7 +27,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={inter.variable}>
-      <body className="font-sans">{children}</body>
+      <body className="font-sans">
+        {children}
+        <ServiceWorkerRegister />
+      </body>
     </html>
   );
 }
