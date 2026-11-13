@@ -1,0 +1,1429 @@
+{
+  "version": 1,
+  "title": "Atelier",
+  "theme": {
+    "mark": [
+      "#7fb2ff",
+      "#ffd36b",
+      "#ffb38a",
+      "#3a3f4c"
+    ],
+    "vars": {
+      "--link": "#7fb2ff"
+    }
+  },
+  "flows": {
+    "label": "Flows",
+    "hint": "How Atelier works, start to finish. Use \"Suggest change\" to send an edit to Linear.",
+    "links": [
+      {
+        "label": "Open the Whiteboard",
+        "url": "https://claude.ai/artifact/RPomfP5TdQepmiZXmrzKvv"
+      }
+    ],
+    "classDefs": "classDef photo fill:#18263d,stroke:#7fb2ff,color:#eeede8\nclassDef pixel fill:#3a2619,stroke:#ffb38a,color:#eeede8",
+    "items": [
+      {
+        "id": "entry",
+        "title": "Getting in",
+        "text": "How you reach each workspace. Photo and Design open today's editor; Sprite goes through Sprite setup into the Pixel workspace. Sprites also open straight from the Library.",
+        "mermaid": "flowchart LR\n H[\"Home<br/>recent work, Library\"] --> N[New]\n N --> Q{\"What are you making?\"}\n Q -->|Photo| P1[Photo]\n Q -->|Design| P2[\"Design presets\"]\n Q -->|Sprite| S1[Sprite]\n P1 --> PW[\"Photo workspace<br/>Canvas document\"]\n P2 --> PW\n S1 --> SS[\"Sprite setup<br/>size, palette, Project, category\"]\n SS --> XW[\"Pixel workspace<br/>Sprite document\"]\n H -. open from Library .-> XW\n class P1,P2,PW photo\n class S1,SS,XW pixel"
+      },
+      {
+        "id": "engine",
+        "title": "One engine under both workspaces",
+        "text": "A workspace changes tools, panels and shortcuts, never the engine. A Photo document is simply a one-frame document.",
+        "mermaid": "flowchart TB\n PW[\"Photo workspace<br/>Brush, Clone, Heal, Masks, Pen, Text\"] --> D[\"Document<br/>Photo = 1 frame, Sprite = many frames\"]\n XW[\"Pixel workspace<br/>Pencil, Line, Bucket, Palette, Inks, Timeline\"] --> D\n D --> LG[\"LayerGraph\"]\n D --> CM[\"Commands + History\"]\n D --> R[\"Renderer (PixiJS)\"]\n D --> IO[\"File I/O<br/>.cpe / .atelier, PNG, sheets\"]\n D --> LB[\"Library store<br/>IndexedDB\"]\n class PW photo\n class XW pixel"
+      },
+      {
+        "id": "model",
+        "title": "What a Sprite is made of",
+        "text": "Aseprite's model: Layers are rows, Frames are columns, and each square is a Cel. Tags name frame ranges; Slices and Tilesets come later.",
+        "mermaid": "flowchart LR\n S[\"Sprite<br/>size, color mode, grid\"] --> PA[\"Palette\"]\n S --> LA[\"Layers<br/>Normal, Background, Group, Tilemap, Reference\"]\n S --> FR[\"Frames<br/>each with a duration\"]\n S --> TG[\"Tags<br/>idle, walk, attack\"]\n S --> SL[\"Slices<br/>9-slice, pivot\"]\n S --> TS[\"Tileset\"]\n LA --> CEL[\"Cel = one Layer in one Frame<br/>empty, normal or linked\"]\n FR --> CEL\n TS --> LA\n class S,CEL pixel"
+      },
+      {
+        "id": "life",
+        "title": "Making a sprite, start to finish",
+        "text": "Plan the Project first so every Sprite shares a size and Palette. Variants loop back into drawing.",
+        "mermaid": "flowchart LR\n A[\"Plan<br/>Project, base size, Palette\"] --> B[\"New Sprite\"]\n B --> C[\"Draw<br/>Pencil, Line, Bucket, Pixel-perfect\"]\n C --> D[\"Animate<br/>Frames, durations, Tags, Onion Skin\"]\n D --> E[\"Preview at 1x\"]\n E --> F[\"Save to Library\"]\n F --> G[\"Export<br/>PNG 1x, Sprite Sheet + JSON, GIF\"]\n G --> H[\"Into the game\"]\n F -. New Variant .-> C\n class B,C,D,E pixel"
+      },
+      {
+        "id": "library",
+        "title": "Library: organize before you draw",
+        "text": "One Sprite per thing, with its animations as Tags. One Palette and base size per Project. Names in lowercase: project/category/name.",
+        "mermaid": "flowchart LR\n L[\"Library\"] --> P[\"Project<br/>Bap, CastleD\"]\n P --> C[\"Category<br/>Character, Tile, Item, UI, Effect\"]\n C --> S[\"Sprite<br/>knight\"]\n S --> T[\"Tags inside the file<br/>idle, walk, attack, hurt\"]\n S --> V[\"Variants<br/>knight_red, knight_ice\"]\n P -. shares .-> PAL[\"Palette + base size\"]\n S -. sorted by .-> LBL[\"Labels\"]\n class S,T,V pixel"
+      },
+      {
+        "id": "draft",
+        "title": "Draft: prompt to editable sprite",
+        "text": "Optional, billed to your own API key, and nothing runs without Confirm. A bad result never touches the canvas.",
+        "mermaid": "flowchart LR\n A[\"Draft panel<br/>prompt, size, palette, model\"] --> B[\"Cost line\"]\n B --> C{Confirm?}\n C -->|no| X[\"Nothing spent\"]\n C -->|yes| D[\"Atelier route<br/>your key, strict JSON\"]\n D --> E[\"Claude returns<br/>palette + pixel grid\"]\n E --> F{\"Valid grid?\"}\n F -->|no| G[\"Error shown<br/>canvas untouched\"]\n F -->|yes| H[\"New Layer via Command<br/>undoable\"]\n H --> I[\"Edit by hand\"]\n I -. Vary current sprite .-> A\n class H,I pixel"
+      }
+    ]
+  },
+  "tabs": [
+    {
+      "id": "tools",
+      "label": "Tools",
+      "itemLabel": "Tool",
+      "kind": "catalog",
+      "search": "Search tools, shortcuts, uses (try: shading, tiles, B)",
+      "readiness": "Tool readiness",
+      "statuses": [
+        {
+          "k": "now",
+          "label": "In Atelier today",
+          "color": "#6fd39a"
+        },
+        {
+          "k": "s1",
+          "label": "Slice 1",
+          "color": "#ffd36b"
+        },
+        {
+          "k": "s2",
+          "label": "Slice 2",
+          "color": "#ffb38a"
+        },
+        {
+          "k": "s3",
+          "label": "Slice 3",
+          "color": "#c9a7ff"
+        },
+        {
+          "k": "later",
+          "label": "Later",
+          "color": "#7d8394"
+        }
+      ],
+      "facet": {
+        "key": "w",
+        "all": "All workspaces",
+        "both": "Both",
+        "values": [
+          {
+            "k": "Photo",
+            "color": "#7fb2ff"
+          },
+          {
+            "k": "Pixel",
+            "color": "#ffb38a"
+          },
+          {
+            "k": "Both",
+            "color": "#eeede8"
+          }
+        ]
+      },
+      "groups": [
+        {
+          "k": "draw",
+          "label": "Draw",
+          "hint": "Freehand tools. In Pixel every stroke lands on whole pixels with no anti-aliasing."
+        },
+        {
+          "k": "shape",
+          "label": "Shapes & Fill",
+          "hint": "Lines, shapes and fills. In Pixel they draw with the current brush and ink, snapped to the grid."
+        },
+        {
+          "k": "select",
+          "label": "Select",
+          "hint": "Selections limit where you paint and what you copy, move or delete. Pixel selections always have hard edges."
+        },
+        {
+          "k": "move",
+          "label": "Move & View",
+          "hint": "Moving content, flipping it, and finding your way around the canvas."
+        },
+        {
+          "k": "ink",
+          "label": "Brush & Ink",
+          "hint": "Options in the context bar that change how every drawing tool behaves."
+        },
+        {
+          "k": "color",
+          "label": "Color & Palette",
+          "hint": "The colors you paint with. In Pixel the Palette is the backbone of a consistent style."
+        },
+        {
+          "k": "layers",
+          "label": "Layers",
+          "hint": "Stacked content. In Pixel each Layer holds one Cel per Frame."
+        },
+        {
+          "k": "time",
+          "label": "Timeline & Animation",
+          "hint": "Frames, Cels and Tags: how a Sprite moves."
+        },
+        {
+          "k": "tiles",
+          "label": "Tilemaps & Slices",
+          "hint": "Reusable tiles for levels, and named regions for UI and hitboxes."
+        },
+        {
+          "k": "sprite",
+          "label": "Sprite & Canvas",
+          "hint": "Document-level commands: create, resize and set up the grid."
+        },
+        {
+          "k": "file",
+          "label": "File & Export",
+          "hint": "Saving your work and getting it into a game."
+        },
+        {
+          "k": "library",
+          "label": "Library",
+          "hint": "Where every sprite lives, organized by Project and Category."
+        },
+        {
+          "k": "draft",
+          "label": "Draft (prompt to sprite)",
+          "hint": "Optional AI step that writes a rough Sprite you then edit by hand. Billed to your own API key."
+        },
+        {
+          "k": "retouch",
+          "label": "Photo retouch",
+          "hint": "Photo-only tools that already ship in Atelier."
+        },
+        {
+          "k": "general",
+          "label": "General",
+          "hint": "Commands that work everywhere."
+        }
+      ],
+      "titleKey": "n",
+      "aliasKey": "a",
+      "aliasLabel": "Aseprite",
+      "groupKey": "g",
+      "statusKey": "s",
+      "noteKey": "x",
+      "keys": [
+        {
+          "key": "kp",
+          "label": "Photo"
+        },
+        {
+          "key": "kx",
+          "label": "Pixel"
+        }
+      ],
+      "fields": [
+        {
+          "key": "d",
+          "label": "Does"
+        },
+        {
+          "key": "h",
+          "label": "How"
+        },
+        {
+          "key": "u",
+          "label": "When"
+        }
+      ],
+      "items": [
+        {
+          "n": "Pencil",
+          "g": "draw",
+          "w": "Pixel",
+          "s": "s1",
+          "kx": "B",
+          "d": "Paints whole pixels in the foreground color. Right-click paints the background color.",
+          "h": "Click for one pixel, drag for a stroke, Shift+click for a straight line from the last point.",
+          "u": "Most of your drawing: outlines, details and single-pixel fixes.",
+          "x": "Photo has a Pencil (P) today, but it draws an anti-aliased stroke."
+        },
+        {
+          "n": "Brush",
+          "g": "draw",
+          "w": "Photo",
+          "s": "now",
+          "kp": "B",
+          "d": "Soft painting with size, hardness, flow, spacing and presets.",
+          "h": "Pick a preset or set the sliders in the options bar, then drag.",
+          "u": "Painting, retouching and painting on masks. Not used in Pixel."
+        },
+        {
+          "n": "Eraser",
+          "g": "draw",
+          "w": "Both",
+          "s": "s1",
+          "kp": "E",
+          "kx": "E",
+          "d": "Removes pixels to transparent. In Pixel it always removes whole pixels.",
+          "h": "Drag over what you want gone. In Photo, hardness controls the edge.",
+          "u": "Cleaning stray pixels, cutting shapes out of a silhouette.",
+          "x": "Photo version is in Atelier today."
+        },
+        {
+          "n": "Spray",
+          "g": "draw",
+          "w": "Pixel",
+          "s": "later",
+          "kx": "Shift+B",
+          "d": "Scatters random pixels inside the brush area.",
+          "h": "Hold and drag. Larger brush and longer hold give denser spray.",
+          "u": "Texture: grass, dust, sparkles, noise on rock."
+        },
+        {
+          "n": "Eyedropper",
+          "g": "draw",
+          "w": "Both",
+          "s": "s1",
+          "kp": "I",
+          "kx": "I or hold Alt",
+          "d": "Picks a color from the canvas into the foreground color. Right-click picks into the background color.",
+          "h": "Hold Alt while using any drawing tool, click, release.",
+          "u": "Reusing an exact color without hunting through the Palette."
+        },
+        {
+          "n": "Blur and Jumble",
+          "g": "draw",
+          "w": "Pixel",
+          "s": "later",
+          "kx": "R / Shift+R",
+          "d": "Blur averages neighboring pixels. Jumble shuffles nearby pixels randomly.",
+          "h": "Drag over an area like a brush.",
+          "u": "Rarely in small sprites. Blur for quick soft transitions on big art, Jumble for organic noise."
+        },
+        {
+          "n": "Text",
+          "g": "draw",
+          "w": "Both",
+          "s": "later",
+          "kp": "T",
+          "d": "Adds text. Photo: editable text layers with font, outline and shadow. Pixel: stamps text with a pixel font.",
+          "h": "Click to place, type, style in the Text options bar.",
+          "u": "Titles, labels, UI mockups, damage numbers.",
+          "x": "Photo text layers are in Atelier today; Pixel text is Later."
+        },
+        {
+          "n": "Line",
+          "g": "shape",
+          "w": "Pixel",
+          "s": "s1",
+          "kx": "L",
+          "d": "Draws a straight line of pixels with the current brush.",
+          "h": "Drag from start to end. Hold Shift to snap to clean pixel-art angles (flat, 45°, 1:2 steps).",
+          "u": "Edges, UI borders, perspective lines, weapons."
+        },
+        {
+          "n": "Curve",
+          "g": "shape",
+          "w": "Pixel",
+          "s": "later",
+          "kx": "Shift+L",
+          "d": "Draws a line, then lets you bend it with two control points.",
+          "h": "Drag the line, then drag each handle, then click to commit.",
+          "u": "Arcs, ropes, tails, smooth hair strands."
+        },
+        {
+          "n": "Rectangle",
+          "g": "shape",
+          "w": "Both",
+          "s": "s1",
+          "kx": "U",
+          "d": "Draws a rectangle outline. Its second state, Filled Rectangle, fills it.",
+          "h": "Drag corner to corner. Shift makes a square, Alt draws from the center. Click the tool again for Filled.",
+          "u": "UI panels, crates, windows, tile blocks.",
+          "x": "Photo has raster rectangle and ellipse shapes today."
+        },
+        {
+          "n": "Ellipse",
+          "g": "shape",
+          "w": "Pixel",
+          "s": "s1",
+          "kx": "Shift+U",
+          "d": "Draws an ellipse outline, or Filled Ellipse as its second state.",
+          "h": "Drag the bounding box. Shift makes a circle.",
+          "u": "Coins, bubbles, eyes, shadows under characters."
+        },
+        {
+          "n": "Contour",
+          "g": "shape",
+          "w": "Pixel",
+          "s": "later",
+          "kx": "D",
+          "d": "Freehand shape that fills when you let go.",
+          "h": "Draw around an area and release.",
+          "u": "Fast silhouettes and blobs before detailing."
+        },
+        {
+          "n": "Polygon",
+          "g": "shape",
+          "w": "Pixel",
+          "s": "later",
+          "kx": "Shift+D",
+          "d": "Filled shape from points you click.",
+          "h": "Click each corner, close on the first point.",
+          "u": "Crystals, rocks, angular UI shapes."
+        },
+        {
+          "n": "Paint Bucket",
+          "g": "shape",
+          "w": "Pixel",
+          "s": "s1",
+          "kx": "G",
+          "d": "Fills a connected area of the same color. With Contiguous off, it fills every matching pixel in the Cel.",
+          "h": "Click inside the area. Tolerance defaults to 0 so it only fills exact matches.",
+          "u": "Blocking in flat colors, recoloring one region.",
+          "x": "Photo has Fill selection today, not a bucket."
+        },
+        {
+          "n": "Gradient",
+          "g": "shape",
+          "w": "Pixel",
+          "s": "later",
+          "kx": "Shift+G",
+          "d": "Fills with a gradient between foreground and background, dithered so it stays pixel art.",
+          "h": "Drag the direction of the gradient across the area.",
+          "u": "Skies, glows, light falloff. Use sparingly."
+        },
+        {
+          "n": "Rectangular Marquee",
+          "g": "select",
+          "w": "Both",
+          "s": "s1",
+          "kp": "M",
+          "kx": "M",
+          "d": "Box selection. In Pixel it snaps to whole pixels.",
+          "h": "Drag a box. Shift adds, Alt subtracts.",
+          "u": "Copying part of a sprite, moving a region, limiting where you paint.",
+          "x": "Photo version is in Atelier today."
+        },
+        {
+          "n": "Elliptical Marquee",
+          "g": "select",
+          "w": "Pixel",
+          "s": "s1",
+          "kx": "Shift+M",
+          "d": "Round selection, snapped to pixels.",
+          "h": "Drag the bounding box.",
+          "u": "Selecting round parts: heads, shields, orbs."
+        },
+        {
+          "n": "Lasso",
+          "g": "select",
+          "w": "Both",
+          "s": "s1",
+          "kp": "L",
+          "kx": "Q",
+          "d": "Freehand selection.",
+          "h": "Draw around what you want and release. Shift adds, Alt subtracts.",
+          "u": "Odd shapes such as a raised arm you want to move.",
+          "x": "Photo version is in Atelier today."
+        },
+        {
+          "n": "Polygonal Lasso",
+          "g": "select",
+          "w": "Pixel",
+          "s": "later",
+          "kx": "Shift+Q",
+          "d": "Selection from straight segments you click.",
+          "h": "Click each corner, close on the first point.",
+          "u": "Angular regions: roofs, blades."
+        },
+        {
+          "n": "Magic Wand",
+          "g": "select",
+          "w": "Both",
+          "s": "s1",
+          "kp": "W",
+          "kx": "W",
+          "d": "Selects by color, either connected or across the whole layer.",
+          "h": "Click a color. Tolerance 0 in Pixel selects one exact color.",
+          "u": "Grabbing every pixel of one color, such as the outline, to recolor it.",
+          "x": "Photo version (with tolerance and feather) is in Atelier today."
+        },
+        {
+          "n": "Select All, Deselect, Invert",
+          "g": "select",
+          "w": "Both",
+          "s": "now",
+          "kp": "Ctrl+A / Ctrl+D / Ctrl+Shift+I",
+          "kx": "Ctrl+A / Ctrl+D / Ctrl+Shift+I",
+          "d": "Selects everything, clears the selection, or flips what is selected.",
+          "h": "Use the shortcuts or the selection bar.",
+          "u": "Invert is handy after wand-selecting the background to grab the character."
+        },
+        {
+          "n": "Feather",
+          "g": "select",
+          "w": "Photo",
+          "s": "now",
+          "d": "Softens a selection's edge.",
+          "h": "Set the feather amount before or after selecting.",
+          "u": "Photo blending only. Pixel never feathers, edges stay hard."
+        },
+        {
+          "n": "Fill and Delete selection",
+          "g": "select",
+          "w": "Both",
+          "s": "now",
+          "kp": "Del",
+          "kx": "Del",
+          "d": "Fills the selection with the foreground color, or clears it.",
+          "h": "Make a selection, then Fill or press Delete.",
+          "u": "Quick blocking or cutting out parts."
+        },
+        {
+          "n": "Move",
+          "a": "Move (moves the selection or the whole Cel)",
+          "g": "move",
+          "w": "Both",
+          "s": "s1",
+          "kp": "V",
+          "kx": "V or hold Ctrl",
+          "d": "Photo moves the layer. Pixel moves the selected pixels, or the whole Cel if nothing is selected.",
+          "h": "Drag. Arrow keys nudge 1 pixel, Shift+arrow nudges 10.",
+          "u": "Repositioning parts between frames, centering a sprite.",
+          "x": "Photo version is in Atelier today."
+        },
+        {
+          "n": "Transform",
+          "g": "move",
+          "w": "Photo",
+          "s": "now",
+          "kp": "T",
+          "d": "Scale and rotate with corner, edge and rotation handles.",
+          "h": "Drag handles. Aspect lock in the options bar.",
+          "u": "Photo layouts. In Pixel, free scaling smears pixels, so Pixel uses Flip, Rotate 90° and Sprite Size instead."
+        },
+        {
+          "n": "Flip Horizontal / Vertical",
+          "g": "move",
+          "w": "Pixel",
+          "s": "s1",
+          "kx": "Shift+H / Shift+V",
+          "d": "Mirrors the selection or the whole Cel.",
+          "h": "Select (or not), then flip.",
+          "u": "Making a left-facing sprite from a right-facing one."
+        },
+        {
+          "n": "Rotate 90° / 180°",
+          "g": "move",
+          "w": "Pixel",
+          "s": "s1",
+          "d": "Turns the selection or Sprite in quarter turns without losing pixels.",
+          "h": "Choose from the Edit or Sprite menu.",
+          "u": "Tiles and items that need four orientations."
+        },
+        {
+          "n": "Hand",
+          "g": "move",
+          "w": "Both",
+          "s": "now",
+          "kp": "H or hold Space",
+          "kx": "H or hold Space",
+          "d": "Pans the view without changing anything.",
+          "h": "Drag, or hold Space with any tool.",
+          "u": "Constantly while zoomed in."
+        },
+        {
+          "n": "Zoom",
+          "g": "move",
+          "w": "Both",
+          "s": "s1",
+          "kp": "wheel, + / -",
+          "kx": "Z, wheel",
+          "d": "Zooms the view. Pixel zooms in whole steps (100%, 200%, 300%) so pixels stay square.",
+          "h": "Wheel, Z then click, or + and -. 0 fits to view.",
+          "u": "Draw zoomed in, check at 1× in the Preview Window.",
+          "x": "Photo wheel zoom is in Atelier today."
+        },
+        {
+          "n": "Pixel Grid and Grid",
+          "g": "move",
+          "w": "Both",
+          "s": "s1",
+          "kx": "Ctrl+'",
+          "d": "Pixel Grid draws a line between every pixel at high zoom. Grid draws larger cells, such as 16×16 tiles.",
+          "h": "Toggle in the View menu. Set the cell size in Grid Settings.",
+          "u": "Pixel Grid when placing exact pixels; Grid when drawing tiles.",
+          "x": "Photo grid guides are in Atelier today."
+        },
+        {
+          "n": "Preview Window",
+          "g": "move",
+          "w": "Pixel",
+          "s": "s2",
+          "d": "A small floating view that shows the sprite at 1× and plays the animation while you draw zoomed in.",
+          "h": "Open from the View menu and park it in a corner.",
+          "u": "Always on while animating. Sprites must read well at real size."
+        },
+        {
+          "n": "Brush size and shape",
+          "g": "ink",
+          "w": "Both",
+          "s": "s1",
+          "d": "Sets how big the brush is. Pixel offers square, circle and line shapes, starting at 1 pixel.",
+          "h": "Context bar, or [ and ] to shrink and grow.",
+          "u": "1 pixel for most sprite work, bigger for blocking.",
+          "x": "Photo brush size, hardness, flow and spacing are in Atelier today."
+        },
+        {
+          "n": "Custom Brush",
+          "g": "ink",
+          "w": "Pixel",
+          "s": "later",
+          "kx": "Ctrl+B",
+          "d": "Turns a selection into a brush you can stamp.",
+          "h": "Select a pattern, make it a brush, click to stamp.",
+          "u": "Bricks, leaves, rivets, repeated details."
+        },
+        {
+          "n": "Pixel-perfect",
+          "g": "ink",
+          "w": "Pixel",
+          "s": "s1",
+          "d": "Removes the extra corner pixels freehand strokes create, so 1-pixel lines stay clean.",
+          "h": "Toggle in the context bar while using Pencil.",
+          "u": "Always on for outlines and line art."
+        },
+        {
+          "n": "Ink: Simple",
+          "g": "ink",
+          "w": "Pixel",
+          "s": "s1",
+          "d": "Paints the color exactly as it is. Painting a transparent color erases.",
+          "h": "Choose Simple in the Ink menu (the default).",
+          "u": "Normal drawing."
+        },
+        {
+          "n": "Ink: Alpha Compositing",
+          "g": "ink",
+          "w": "Pixel",
+          "s": "s1",
+          "d": "Blends a semi-transparent color over the pixels below.",
+          "h": "Choose it, lower the color's alpha, paint.",
+          "u": "Glass, glows, soft shadows on larger art."
+        },
+        {
+          "n": "Ink: Lock Alpha",
+          "g": "ink",
+          "w": "Pixel",
+          "s": "s1",
+          "d": "Paints only on pixels that already have color.",
+          "h": "Choose it, then paint freely over the shape.",
+          "u": "Shading inside a silhouette without spilling outside."
+        },
+        {
+          "n": "Ink: Shading",
+          "g": "ink",
+          "w": "Pixel",
+          "s": "s1",
+          "d": "Each pass moves a pixel one step along a color ramp in the Palette. Right-click steps the other way.",
+          "h": "Select the ramp in the Palette, choose Shading, paint over the area.",
+          "u": "Fast, consistent light and shadow."
+        },
+        {
+          "n": "Ink: Copy Alpha+Color",
+          "g": "ink",
+          "w": "Pixel",
+          "s": "later",
+          "d": "Replaces both color and transparency of each pixel exactly.",
+          "h": "Choose it in the Ink menu.",
+          "u": "Editing partly transparent pixels precisely."
+        },
+        {
+          "n": "Symmetry",
+          "g": "ink",
+          "w": "Pixel",
+          "s": "s1",
+          "d": "Mirrors every stroke across a vertical axis, horizontal axis, or both.",
+          "h": "Toggle in the context bar; drag the axis line to move it.",
+          "u": "Front-facing characters, icons, shields, symmetrical props."
+        },
+        {
+          "n": "Tiled Mode",
+          "g": "ink",
+          "w": "Pixel",
+          "s": "later",
+          "d": "Shows copies of the canvas around itself so strokes wrap across the edges.",
+          "h": "Choose X, Y or both from the View menu, then draw over the seams.",
+          "u": "Seamless floor, wall and background tiles."
+        },
+        {
+          "n": "Opacity",
+          "g": "ink",
+          "w": "Both",
+          "s": "now",
+          "d": "How see-through paint or a layer is.",
+          "h": "Slider in the options bar or Layers panel.",
+          "u": "Photo blending. In Pixel prefer solid colors; use layer opacity only for effects."
+        },
+        {
+          "n": "Foreground and Background color",
+          "g": "color",
+          "w": "Both",
+          "s": "s1",
+          "d": "The two active colors. Left click paints foreground, right click paints background.",
+          "h": "Click a swatch to set foreground, right-click to set background.",
+          "u": "Keep your main color and its shadow one click apart.",
+          "x": "Photo has a single paint color today."
+        },
+        {
+          "n": "Palette panel",
+          "g": "color",
+          "w": "Pixel",
+          "s": "s1",
+          "d": "The swatches that make up the Sprite's colors.",
+          "h": "Add, delete, drag to reorder into ramps (dark to light). Turn on Palette only to block colors outside it.",
+          "u": "Set it before you draw. A small palette (8 to 32 colors) gives a consistent look."
+        },
+        {
+          "n": "Add colors from canvas",
+          "g": "color",
+          "w": "Pixel",
+          "s": "s1",
+          "d": "Pulls every color used in the Sprite into the Palette.",
+          "h": "Palette menu, then Add from canvas.",
+          "u": "Cleaning up a sprite drawn freely, or one created by Draft."
+        },
+        {
+          "n": "Palette presets",
+          "g": "color",
+          "w": "Pixel",
+          "s": "s1",
+          "d": "Ready-made palettes such as DB16, DB32 and PICO-8.",
+          "h": "Palette menu, then Load preset.",
+          "u": "Starting a Project fast with a proven palette."
+        },
+        {
+          "n": "Color Mode",
+          "a": "RGB / Indexed / Grayscale",
+          "g": "color",
+          "w": "Pixel",
+          "s": "later",
+          "d": "RGB stores any color. Indexed stores each pixel as a Palette number, so editing a swatch recolors the whole Sprite.",
+          "h": "Sprite menu, then Color Mode.",
+          "u": "Indexed for strict retro work and instant palette swaps. Slice 1 ships RGB with Palette only."
+        },
+        {
+          "n": "Replace Color",
+          "g": "color",
+          "w": "Pixel",
+          "s": "s2",
+          "d": "Swaps one color for another across the Cel, Layer or selection.",
+          "h": "Pick from and to colors, set the scope, apply.",
+          "u": "Making recolor Variants: team colors, enemy tiers."
+        },
+        {
+          "n": "Outline",
+          "g": "color",
+          "w": "Pixel",
+          "s": "s2",
+          "d": "Adds a 1-pixel outline around all colored pixels, inside or outside the shape.",
+          "h": "Edit menu, then Outline. Choose color and place.",
+          "u": "Making a sprite pop against busy backgrounds."
+        },
+        {
+          "n": "New Layer",
+          "g": "layers",
+          "w": "Both",
+          "s": "now",
+          "kx": "Shift+N",
+          "d": "Adds an empty layer above the current one.",
+          "h": "Layers panel button or shortcut. Double-click to rename.",
+          "u": "Separate outline, color and shading so each stays editable."
+        },
+        {
+          "n": "Background layer",
+          "g": "layers",
+          "w": "Pixel",
+          "s": "s1",
+          "d": "An opaque bottom layer. Only one per Sprite, and it cannot move.",
+          "h": "Choose a solid background in New Sprite, or convert a layer.",
+          "u": "Tiles and backdrops that must never be see-through. Game sprites usually skip it."
+        },
+        {
+          "n": "Group",
+          "g": "layers",
+          "w": "Both",
+          "s": "now",
+          "d": "Folder of layers that hide, lock and move together.",
+          "h": "Select layers, then Group.",
+          "u": "Body parts, equipment sets, effects."
+        },
+        {
+          "n": "Reference layer",
+          "g": "layers",
+          "w": "Pixel",
+          "s": "later",
+          "d": "An image you trace over. It is never exported.",
+          "h": "Layer menu, then New Reference Layer from file.",
+          "u": "Tracing a sketch, photo, or a Draft result."
+        },
+        {
+          "n": "Tilemap layer",
+          "g": "layers",
+          "w": "Pixel",
+          "s": "later",
+          "kx": "Space+N",
+          "d": "A layer made of grid cells, each pointing at a tile in a Tileset.",
+          "h": "Layer menu, then New Tilemap Layer. Uses the current Grid size.",
+          "u": "Levels and maps built from reusable tiles."
+        },
+        {
+          "n": "Visibility and Lock",
+          "g": "layers",
+          "w": "Both",
+          "s": "now",
+          "kx": "Shift+X (visibility)",
+          "d": "Hides a layer, or stops you drawing on it.",
+          "h": "Eye and lock icons in the Layers panel. On a Group they apply to every child.",
+          "u": "Lock finished layers so stray strokes never land on them."
+        },
+        {
+          "n": "Layer opacity and blend mode",
+          "g": "layers",
+          "w": "Both",
+          "s": "now",
+          "d": "How a layer mixes with the layers below.",
+          "h": "Layers panel, or Layer Properties.",
+          "u": "Photo compositing. In Pixel, keep to Normal unless making effects."
+        },
+        {
+          "n": "Merge Down and Flatten",
+          "g": "layers",
+          "w": "Both",
+          "s": "s1",
+          "kp": "Ctrl+E",
+          "kx": "Ctrl+E",
+          "d": "Merge Down joins a layer into the one below. Flatten joins all layers.",
+          "h": "Layer menu.",
+          "u": "Before exporting a single-layer asset, or to simplify."
+        },
+        {
+          "n": "Duplicate layer",
+          "g": "layers",
+          "w": "Both",
+          "s": "now",
+          "d": "Copies the layer with all its Cels.",
+          "h": "Layers panel button or right-click menu.",
+          "u": "Trying a change without losing the original."
+        },
+        {
+          "n": "Layer Properties",
+          "g": "layers",
+          "w": "Both",
+          "s": "s1",
+          "kx": "Shift+P",
+          "d": "Name, opacity and blend mode in one dialog.",
+          "h": "Double-click the layer or use the shortcut.",
+          "u": "Renaming and tuning a layer quickly."
+        },
+        {
+          "n": "Masks and Clipping",
+          "g": "layers",
+          "w": "Photo",
+          "s": "now",
+          "d": "A mask hides parts of a layer without erasing them. Clipping shows a layer only where the layer below has pixels.",
+          "h": "Layers panel MASK section. Paint white to reveal, erase to hide.",
+          "u": "Photo compositing. Pixel uses Lock Alpha instead."
+        },
+        {
+          "n": "Timeline panel",
+          "g": "time",
+          "w": "Pixel",
+          "s": "s2",
+          "d": "A grid with Layers as rows and Frames as columns. Each square is a Cel.",
+          "h": "Click a square to edit that Layer at that Frame. Drag to select ranges.",
+          "u": "Any time a Sprite has more than one Frame."
+        },
+        {
+          "n": "New Frame",
+          "g": "time",
+          "w": "Pixel",
+          "s": "s2",
+          "kx": "Alt+N",
+          "d": "Adds a Frame after the current one, copying its Cels.",
+          "h": "Shortcut or the + in the Timeline. New Empty Frame adds a blank one.",
+          "u": "Building an animation pose by pose."
+        },
+        {
+          "n": "Duplicate and Delete Frame",
+          "g": "time",
+          "w": "Pixel",
+          "s": "s2",
+          "d": "Copies or removes the selected Frames.",
+          "h": "Right-click a Frame number.",
+          "u": "Holding a pose longer, trimming a loop."
+        },
+        {
+          "n": "Frame Duration",
+          "g": "time",
+          "w": "Pixel",
+          "s": "s2",
+          "d": "How long each Frame shows, in milliseconds.",
+          "h": "Right-click the Frame number, then Frame Properties.",
+          "u": "Timing: hold the anticipation, speed through the swing."
+        },
+        {
+          "n": "Previous and Next Frame",
+          "g": "time",
+          "w": "Pixel",
+          "s": "s2",
+          "kx": ", and . or ← →",
+          "d": "Steps through Frames.",
+          "h": "Shortcuts or Timeline arrows.",
+          "u": "Flipping back and forth to check motion."
+        },
+        {
+          "n": "Play and Stop",
+          "g": "time",
+          "w": "Pixel",
+          "s": "s2",
+          "kx": "Enter",
+          "d": "Plays the animation on the canvas and in the Preview Window.",
+          "h": "Press Enter, or the play button.",
+          "u": "After every few frames."
+        },
+        {
+          "n": "Tags",
+          "g": "time",
+          "w": "Pixel",
+          "s": "s2",
+          "d": "Name a range of Frames and how it loops: Forward, Reverse or Ping-pong.",
+          "h": "Select Frames, then New Tag. Name it (idle, walk) and pick a color and direction.",
+          "u": "One Tag per animation in a Sprite. Game engines read Tags from the sheet JSON."
+        },
+        {
+          "n": "Linked Cels",
+          "g": "time",
+          "w": "Pixel",
+          "s": "s2",
+          "d": "Several Frames share the same Cel pixels. Edit one and all update.",
+          "h": "Select Cels, then Link Cels.",
+          "u": "Parts that do not move, such as a body while only the arm animates."
+        },
+        {
+          "n": "Cel Properties",
+          "g": "time",
+          "w": "Pixel",
+          "s": "s2",
+          "d": "Opacity for a single Cel.",
+          "h": "Right-click a Cel.",
+          "u": "Fade-ins and flashes without touching the layer."
+        },
+        {
+          "n": "Onion Skin",
+          "g": "time",
+          "w": "Pixel",
+          "s": "s2",
+          "d": "Shows the previous and next Frames faintly under the current one.",
+          "h": "Toggle in the Timeline; set how many Frames and their tint.",
+          "u": "Drawing in-betweens and keeping motion smooth."
+        },
+        {
+          "n": "Reverse Frames",
+          "g": "time",
+          "w": "Pixel",
+          "s": "later",
+          "d": "Reverses the order of the selected Frames.",
+          "h": "Select Frames, then Reverse.",
+          "u": "Turning an open animation into a close animation."
+        },
+        {
+          "n": "Tileset",
+          "g": "tiles",
+          "w": "Pixel",
+          "s": "later",
+          "d": "A collection of same-sized tiles, like a Palette for tiles. Tile 0 is empty.",
+          "h": "Created with a Tilemap layer; tiles appear in the Tileset panel.",
+          "u": "Any game with grid-based levels."
+        },
+        {
+          "n": "Draw Pixels / Draw Tiles",
+          "g": "tiles",
+          "w": "Pixel",
+          "s": "later",
+          "kx": "Space+Tab",
+          "d": "Draw Pixels edits what tiles look like. Draw Tiles places tiles on the map.",
+          "h": "Switch modes with the shortcut or the Tilemap bar.",
+          "u": "Draw Pixels to paint tiles, Draw Tiles to build the level."
+        },
+        {
+          "n": "Manual / Auto / Stack",
+          "g": "tiles",
+          "w": "Pixel",
+          "s": "later",
+          "kx": "Space+1 / 2 / 3",
+          "d": "How pixel edits affect tiles. Auto (default) creates and reuses tiles as you draw. Manual edits tiles in place. Stack always makes new tiles.",
+          "h": "Choose in the Tilemap bar.",
+          "u": "Auto for most work; Manual when every copy of a tile should change."
+        },
+        {
+          "n": "Slice",
+          "g": "tiles",
+          "w": "Pixel",
+          "s": "later",
+          "kx": "Shift+C",
+          "d": "A named rectangle on the Sprite with optional 9-slice center and pivot point.",
+          "h": "Drag a box with the Slice tool, then name it in its properties.",
+          "u": "Stretchable UI buttons, hitboxes, a pivot at a character's feet."
+        },
+        {
+          "n": "New Sprite",
+          "g": "sprite",
+          "w": "Pixel",
+          "s": "s1",
+          "d": "Creates a Sprite: size (16, 32, 48, 64 or custom), background, Project and Category.",
+          "h": "Home or New, choose Sprite, fill in Sprite setup.",
+          "u": "Start of every asset. Match the Project's base size."
+        },
+        {
+          "n": "New Document",
+          "g": "sprite",
+          "w": "Photo",
+          "s": "now",
+          "d": "Creates a Photo canvas from size presets (1:1, 16:9, A4) with a transparent or color background.",
+          "h": "New, choose Photo or Design.",
+          "u": "Photos, graphics and layouts."
+        },
+        {
+          "n": "Canvas Size",
+          "g": "sprite",
+          "w": "Both",
+          "s": "s1",
+          "d": "Adds or trims space around the edges without scaling content.",
+          "h": "Sprite menu. Choose the anchor side.",
+          "u": "Room for a sword swing or a taller hat.",
+          "x": "Photo crop and canvas sizing are in Atelier today."
+        },
+        {
+          "n": "Sprite Size",
+          "g": "sprite",
+          "w": "Pixel",
+          "s": "s1",
+          "d": "Scales the whole Sprite with nearest-neighbor, so pixels stay sharp.",
+          "h": "Sprite menu. Use whole-number scales (2×, 3×).",
+          "u": "Upscaling for preview or a higher-resolution game. Downscaling rarely works; redraw instead."
+        },
+        {
+          "n": "Grid Settings",
+          "g": "sprite",
+          "w": "Pixel",
+          "s": "s1",
+          "d": "Grid cell size and offset.",
+          "h": "View menu, then Grid Settings.",
+          "u": "Match your tile size (16×16) before drawing tiles."
+        },
+        {
+          "n": "Save",
+          "g": "file",
+          "w": "Both",
+          "s": "now",
+          "kp": "Ctrl+S",
+          "kx": "Ctrl+S",
+          "d": "Saves a reopenable project file with layers, frames and settings.",
+          "h": "Shortcut or File menu.",
+          "u": "Always. Exports are one-way.",
+          "x": "Saves as .cpe today; .atelier is pending a decision."
+        },
+        {
+          "n": "Tabs and Autosave",
+          "g": "file",
+          "w": "Both",
+          "s": "now",
+          "d": "Several open documents, each autosaved in the browser and restored on reload.",
+          "h": "Tab bar: new, switch, close.",
+          "u": "Working on several sprites side by side."
+        },
+        {
+          "n": "Export PNG",
+          "g": "file",
+          "w": "Both",
+          "s": "s1",
+          "d": "Flattened image. Pixel exports at 1× (the game file) and at nearest-neighbor multiples (2×, 4×, 8×).",
+          "h": "File, Export. Pick scale and background.",
+          "u": "1× for the engine, 4× or 8× for sharing.",
+          "x": "Photo PNG/JPG/WebP export with scale is in Atelier today."
+        },
+        {
+          "n": "Export each layer",
+          "g": "file",
+          "w": "Both",
+          "s": "now",
+          "d": "Every layer as its own file in a .zip, optionally trimmed.",
+          "h": "Export dialog, Per layer.",
+          "u": "Handing separate parts to an engine or animator."
+        },
+        {
+          "n": "Export Sprite Sheet",
+          "g": "file",
+          "w": "Pixel",
+          "s": "s2",
+          "d": "All Frames laid out in one image (horizontal, vertical, rows or packed) plus a JSON file with frame positions, durations and Tags.",
+          "h": "File, Export Sprite Sheet. Choose layout, padding and trim.",
+          "u": "Getting animations into a game engine."
+        },
+        {
+          "n": "Import Sprite Sheet",
+          "g": "file",
+          "w": "Pixel",
+          "s": "s2",
+          "d": "Cuts a sheet image back into Frames by cell size, offset and padding.",
+          "h": "File, Import Sprite Sheet. Set cell size and order.",
+          "u": "Editing sheets made elsewhere.",
+          "x": "Built on the Auto-Layers slicer that ships today."
+        },
+        {
+          "n": "Export GIF",
+          "g": "file",
+          "w": "Pixel",
+          "s": "s2",
+          "d": "Animated GIF of a Tag or all Frames.",
+          "h": "File, Export, choose GIF and scale.",
+          "u": "Sharing progress, store pages, Discord."
+        },
+        {
+          "n": "Library browser",
+          "g": "library",
+          "w": "Pixel",
+          "s": "s2",
+          "d": "Thumbnails of every Sprite, filtered by Project, Category and Label.",
+          "h": "Home, then Library. Click to open, right-click for options.",
+          "u": "Finding and reusing assets across a game."
+        },
+        {
+          "n": "Project",
+          "g": "library",
+          "w": "Pixel",
+          "s": "s2",
+          "d": "A game's set of Sprites, with its own shared Palette and base size.",
+          "h": "Create from the Library; pick it in Sprite setup.",
+          "u": "One per game: Bap, CastleD."
+        },
+        {
+          "n": "Category",
+          "g": "library",
+          "w": "Pixel",
+          "s": "s2",
+          "d": "What kind of asset: Character, Tile, Item, UI or Effect.",
+          "h": "Set in Sprite setup; change in Library.",
+          "u": "Keeps big projects browsable."
+        },
+        {
+          "n": "Labels",
+          "g": "library",
+          "w": "Pixel",
+          "s": "s2",
+          "d": "Free-form sorting words such as boss, forest, v2.",
+          "h": "Add in the Library card.",
+          "u": "Cross-cutting groups. Named Labels so they never clash with Tags."
+        },
+        {
+          "n": "New Variant",
+          "g": "library",
+          "w": "Pixel",
+          "s": "s2",
+          "d": "Duplicates a Sprite with the same size and Palette, linked to the original.",
+          "h": "Right-click a Sprite in the Library, New Variant.",
+          "u": "Recolors, damaged states, seasonal skins."
+        },
+        {
+          "n": "Draft panel",
+          "g": "draft",
+          "w": "Pixel",
+          "s": "s3",
+          "d": "Describe a Sprite; Atelier asks Claude for a Palette and a grid of pixels and adds it as a new Layer.",
+          "h": "Type a prompt, check size and Palette, review the cost line, Confirm.",
+          "u": "A rough start for an idea. Expect to clean it up by hand."
+        },
+        {
+          "n": "Vary current sprite",
+          "g": "draft",
+          "w": "Pixel",
+          "s": "s3",
+          "d": "Sends the current grid back with your note and saves the result as a new Variant.",
+          "h": "Draft panel, Vary, type what should change.",
+          "u": "Quick alternates: angrier face, different weapon."
+        },
+        {
+          "n": "Model choice",
+          "g": "draft",
+          "w": "Pixel",
+          "s": "s3",
+          "d": "Haiku (default, cheapest) or Sonnet (better at following the format).",
+          "h": "Dropdown in the Draft panel.",
+          "u": "Haiku for 16×16 tries, Sonnet for 32×32 and up."
+        },
+        {
+          "n": "Cost line and Confirm",
+          "g": "draft",
+          "w": "Pixel",
+          "s": "s3",
+          "d": "Shows the estimated cost before anything is spent.",
+          "h": "Read it, then Confirm or cancel.",
+          "u": "Every Draft. Nothing runs without Confirm."
+        },
+        {
+          "n": "API key",
+          "g": "draft",
+          "w": "Both",
+          "s": "s3",
+          "d": "Your Anthropic API key, stored only in this browser and sent per request through Atelier's route.",
+          "h": "Settings, Draft, paste key.",
+          "u": "Once, before the first Draft."
+        },
+        {
+          "n": "Clone Stamp",
+          "g": "retouch",
+          "w": "Photo",
+          "s": "now",
+          "kp": "K",
+          "d": "Copies pixels from one spot to another as you paint.",
+          "h": "Alt+click to set the source, then paint.",
+          "u": "Removing objects by covering them with nearby texture."
+        },
+        {
+          "n": "Heal",
+          "g": "retouch",
+          "w": "Photo",
+          "s": "now",
+          "kp": "J",
+          "d": "Content-aware fill that rebuilds texture over what you brush.",
+          "h": "Brush over the blemish.",
+          "u": "Spots, wires, small distractions."
+        },
+        {
+          "n": "Pen",
+          "g": "retouch",
+          "w": "Photo",
+          "s": "now",
+          "kp": "N",
+          "d": "Bezier path you can turn into a stroke, a fill or a selection.",
+          "h": "Click anchors, drag for curves, Enter to close.",
+          "u": "Precise cutouts and smooth shapes."
+        },
+        {
+          "n": "Crop",
+          "g": "retouch",
+          "w": "Photo",
+          "s": "now",
+          "kp": "C",
+          "d": "Trims the canvas to a rectangle.",
+          "h": "Drag the area, confirm.",
+          "u": "Framing photos."
+        },
+        {
+          "n": "Adjustments and Filters",
+          "g": "retouch",
+          "w": "Photo",
+          "s": "now",
+          "d": "Exposure, contrast, saturation, hue, temperature, levels; B&W, sepia, blur, sharpen, vignette.",
+          "h": "Adjust & Filters panel, per layer.",
+          "u": "Color correction and quick looks."
+        },
+        {
+          "n": "Remove Background",
+          "g": "retouch",
+          "w": "Photo",
+          "s": "now",
+          "d": "On-device model cuts the subject out. Free, images never leave the device.",
+          "h": "Select the layer, Remove background.",
+          "u": "Product shots, portraits, stickers.",
+          "x": "Code is on GitHub; confirm status after the local push."
+        },
+        {
+          "n": "Auto-Layers (Slicer)",
+          "g": "retouch",
+          "w": "Photo",
+          "s": "now",
+          "d": "Detects separate regions or a grid in an image and splits each into its own layer.",
+          "h": "Auto-Layers dialog: detect regions or even grid.",
+          "u": "Sticker sheets, card grids; the base for Import Sprite Sheet."
+        },
+        {
+          "n": "Undo and Redo",
+          "g": "general",
+          "w": "Both",
+          "s": "now",
+          "kp": "Ctrl+Z / Ctrl+Y",
+          "kx": "Ctrl+Z / Ctrl+Y",
+          "d": "Steps backward and forward through every edit.",
+          "h": "Shortcuts or the History panel.",
+          "u": "Always. Every change in Atelier is undoable."
+        },
+        {
+          "n": "History panel",
+          "g": "general",
+          "w": "Both",
+          "s": "now",
+          "d": "List of recent edits; click one to jump back.",
+          "h": "Open from the Window menu.",
+          "u": "Going back several steps at once.",
+          "x": "Reported done locally; not on GitHub yet."
+        },
+        {
+          "n": "Settings and tooltips",
+          "g": "general",
+          "w": "Both",
+          "s": "now",
+          "d": "App preferences, including hover tips with a delay.",
+          "h": "Settings panel.",
+          "u": "Turning tips off once you know the tools."
+        }
+      ]
+    },
+    {
+      "id": "glossary",
+      "label": "Glossary",
+      "kind": "glossary",
+      "decisions": {
+        "title": "Naming decisions",
+        "items": [
+          "**Atelier** is the app. It has two **workspaces**: **Photo** (today's editor) and **Pixel**.",
+          "What you make in Pixel is a **Sprite**, as in Aseprite. Product line name: **Atelier Pixel**.",
+          "Pixel terms follow Aseprite: Cel, Frame, Tag, Palette, Ink, Tileset, Tilemap, Slice, Onion Skin, Sprite Sheet.",
+          "The Library sorts with **Labels**, so they never clash with Aseprite's frame **Tags**.",
+          "Open: file extension (.cpe or .atelier) and per-workspace shortcuts. Both are Decision cards on the Board."
+        ]
+      },
+      "kinds": [
+        {
+          "match": "Aseprite",
+          "color": "#ffb38a"
+        },
+        {
+          "match": "Atelier",
+          "color": "#7fb2ff"
+        }
+      ],
+      "terms": [
+        {
+          "name": "Atelier",
+          "kind": "The app",
+          "text": "One browser studio with two workspaces sharing one engine."
+        },
+        {
+          "name": "Workspace",
+          "kind": "Atelier term",
+          "text": "A set of tools, panels and shortcuts for a kind of work: Photo or Pixel. It changes the tools, not the engine."
+        },
+        {
+          "name": "Document",
+          "kind": "Atelier term",
+          "text": "Anything open in a tab. In Photo it is a Canvas; in Pixel it is a Sprite."
+        },
+        {
+          "name": "Sprite",
+          "kind": "Aseprite",
+          "text": "A Pixel document: size, color mode, Palette, Layers, Frames, Tags, Slices."
+        },
+        {
+          "name": "Layer",
+          "kind": "Aseprite",
+          "text": "A stack of content. Kinds: Normal, Background, Group, Tilemap, Reference."
+        },
+        {
+          "name": "Frame",
+          "kind": "Aseprite",
+          "text": "One point in time in an animation, with its own duration in milliseconds."
+        },
+        {
+          "name": "Cel",
+          "kind": "Aseprite",
+          "text": "One Layer in one Frame: the actual pixels at that spot in the Timeline. Can be empty or linked."
+        },
+        {
+          "name": "Linked Cel",
+          "kind": "Aseprite",
+          "text": "A Cel shared by several Frames. Edit one and all change."
+        },
+        {
+          "name": "Tag",
+          "kind": "Aseprite",
+          "text": "A named range of Frames with a loop direction. One Tag per animation (idle, walk)."
+        },
+        {
+          "name": "Timeline",
+          "kind": "Aseprite",
+          "text": "The Layers × Frames grid at the bottom of the Pixel workspace."
+        },
+        {
+          "name": "Onion Skin",
+          "kind": "Aseprite",
+          "text": "Faint previous and next Frames shown while drawing."
+        },
+        {
+          "name": "Palette",
+          "kind": "Aseprite",
+          "text": "The ordered list of colors a Sprite uses."
+        },
+        {
+          "name": "Color Mode",
+          "kind": "Aseprite",
+          "text": "RGB, Indexed (pixels point at Palette slots) or Grayscale."
+        },
+        {
+          "name": "Ink",
+          "kind": "Aseprite",
+          "text": "How a drawing tool applies color: Simple, Alpha Compositing, Lock Alpha, Shading, Copy Alpha+Color."
+        },
+        {
+          "name": "Pixel-perfect",
+          "kind": "Aseprite",
+          "text": "Stroke cleanup that removes doubled corner pixels."
+        },
+        {
+          "name": "Tileset",
+          "kind": "Aseprite",
+          "text": "Reusable same-sized tiles. A Tilemap layer's cells point at them."
+        },
+        {
+          "name": "Tilemap",
+          "kind": "Aseprite",
+          "text": "A layer made of tile references on a grid."
+        },
+        {
+          "name": "Slice",
+          "kind": "Aseprite",
+          "text": "A named region with optional 9-slice center and pivot."
+        },
+        {
+          "name": "Sprite Sheet",
+          "kind": "Aseprite",
+          "text": "All Frames packed in one image, plus JSON with positions, durations and Tags."
+        },
+        {
+          "name": "Library",
+          "kind": "Atelier term",
+          "text": "Every Sprite you have, organized by Project, Category and Label."
+        },
+        {
+          "name": "Project",
+          "kind": "Atelier term",
+          "text": "One game's Sprites, sharing a Palette and base size."
+        },
+        {
+          "name": "Category",
+          "kind": "Atelier term",
+          "text": "Character, Tile, Item, UI or Effect."
+        },
+        {
+          "name": "Label",
+          "kind": "Atelier term",
+          "text": "A free-form sorting word in the Library. Not the same as a Tag."
+        },
+        {
+          "name": "Variant",
+          "kind": "Atelier term",
+          "text": "A linked copy of a Sprite for recolors or alternate states."
+        },
+        {
+          "name": "Draft",
+          "kind": "Atelier term",
+          "text": "The optional prompt step that writes a rough Sprite as a new Layer."
+        },
+        {
+          "name": "Command",
+          "kind": "Atelier engine",
+          "text": "Every change goes through one, which is why everything is undoable."
+        }
+      ]
+    }
+  ]
+}
