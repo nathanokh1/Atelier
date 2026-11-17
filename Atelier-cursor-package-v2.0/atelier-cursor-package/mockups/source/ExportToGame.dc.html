@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Export to game</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0f1014}
+a{color:#a5b4fc}a:hover{color:#c7d2fe}
+button{font:inherit;color:inherit}
+
+</style>
+</helmet>
+<div style="width:100%;box-sizing:border-box;font-family:Inter,system-ui,sans-serif;color:#e7e7ea;background:#0f1014;font-size:14px;height:900px;position:relative;overflow:hidden">
+<div style="position:absolute;inset:0;background:rgba(6,7,10,.78);display:flex;align-items:center;justify-content:center;padding:24px">
+<div role="dialog" aria-label="Export to game" style="width:100%;max-width:880px;background:#1a1b21;border:1px solid #2a2c35;border-radius:14px;box-shadow:0 30px 80px rgba(0,0,0,.5)">
+<div style="display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid #2a2c35"><span style="color:#ffb38a"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 19h16"/></svg></span><h2 style="margin:0;font-size:16px;font-weight:700">Export to game: Bap</h2><div style="flex:1"></div><button aria-label="Close" style="background:none;border:none;color:#a3a6b4;cursor:pointer"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+<div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;padding:20px">
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#a3a6b4">Engine target</div><div style="display:flex;flex-wrap:wrap;gap:8px"><div style="flex:1 1 120px;display:flex;flex-direction:column;gap:4px;padding:10px 12px;border-radius:10px;border:1px solid #ffb38a;background:#3a2a20"><span style="font-weight:600;font-size:13px">Swift code</span><span style="font-size:11px;color:#a3a6b4">AtelierKit · SpriteKit and SwiftUI</span></div><div style="flex:1 1 120px;display:flex;flex-direction:column;gap:4px;padding:10px 12px;border-radius:10px;border:1px solid #2a2c35;background:#0f1014"><span style="font-weight:600;font-size:13px">PNG atlas</span><span style="font-size:11px;color:#a3a6b4">Xcode .atlas folders</span></div><div style="flex:1 1 120px;display:flex;flex-direction:column;gap:4px;padding:10px 12px;border-radius:10px;border:1px solid #2a2c35;background:#0f1014"><span style="font-weight:600;font-size:13px">Unity</span><span style="font-size:11px;color:#a3a6b4">PNG + JSON + importer</span></div><div style="flex:1 1 120px;display:flex;flex-direction:column;gap:4px;padding:10px 12px;border-radius:10px;border:1px solid #2a2c35;background:#0f1014"><span style="font-weight:600;font-size:13px">PNG + JSON</span><span style="font-size:11px;color:#a3a6b4">Any engine</span></div></div>
+<div style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#a3a6b4">Linked folder</div><div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #2a2c35;border-radius:10px;background:#0f1014"><span style="color:#ffb38a"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span><span style="flex:1;font-family:JetBrains Mono,monospace;font-size:12px">~/Developer/bap/Bap/Art</span><button style="padding:5px 10px;border-radius:7px;border:1px solid #2a2c35;background:#22232b;font-size:12px;cursor:pointer">Change</button></div>
+<div style="font-size:12px;color:#7c7f8e;line-height:1.5">Set in Connect a game. Chrome and Edge write straight into this folder. Other browsers download a .zip with the same layout.</div>
+<div><div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-top:1px solid #2a2c35;font-size:13px"><span style="color:#a3a6b4">Format</span><span style="color:#e7e7ea">Swift source, palette indexes</span></div><div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-top:1px solid #2a2c35;font-size:13px"><span style="color:#a3a6b4">Connection</span><span style="color:#e7e7ea">Waiting for developer step</span></div><div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-top:1px solid #2a2c35;font-size:13px"><span style="color:#a3a6b4">Upgrades and states</span><span style="color:#e7e7ea">Exported as layer lists</span></div><div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-top:1px solid #2a2c35;font-size:13px"><span style="color:#a3a6b4">Names</span><span style="color:#e7e7ea">sprite_tag_frame</span></div><div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-top:1px solid #2a2c35;font-size:13px"><span style="color:#a3a6b4">Write atelier-manifest.json</span><span style="color:#e7e7ea">On</span></div><div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-top:1px solid #2a2c35;font-size:13px"><span style="color:#a3a6b4">Also save the source .atelier files</span><span style="color:#e7e7ea">On</span></div></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+<div style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#a3a6b4">What gets written</div><pre style="margin:0;padding:12px 14px;border-radius:10px;background:#0f1014;border:1px solid #2a2c35;font-family:JetBrains Mono,monospace;font-size:12px;line-height:1.6;color:#e7e7ea;overflow-x:auto">Bap/Bap/Art/
+├─ Generated/            (Atelier owns this folder)
+│  ├─ Sprites.swift      names + upgrades + tags
+│  ├─ Cels.swift         pixel data as palette indexes
+│  ├─ Palette.swift      Bap Retro 16 + ramps + swaps
+│  └─ atelier-manifest.json
+├─ Source/
+│  └─ item/paddle.atelier, tile/brick_gold.atelier …
+└─ atelier-handshake.json   (written by the game side)</pre>
+<div style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#a3a6b4">Changes since last export (Nov 12)</div><div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid #2a2c35;font-size:13px"><span style="width:20px;color:#ffd36b"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M12 5v14M5 12h14"/></svg></span><span style="flex:1">brick_gold</span><span style="font-size:12px;color:#7c7f8e">New Tag: break (6 frames)</span></div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid #2a2c35;font-size:13px"><span style="width:20px;color:#ffd36b"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M12 5v14M5 12h14"/></svg></span><span style="flex:1">ball</span><span style="font-size:12px;color:#7c7f8e">Recolored, trail frames changed</span></div><div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid #2a2c35;font-size:13px"><span style="width:20px;color:#6fd39a"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" ><path d="M5 12l5 5 9-10"/></svg></span><span style="flex:1">22 others</span><span style="font-size:12px;color:#7c7f8e">Unchanged since last export</span></div></div>
+</div></div>
+<div style="display:flex;align-items:center;gap:8px;padding:14px 20px;border-top:1px solid #2a2c35"><span style="font-size:12px;color:#7c7f8e">Also moves the Linear card "Art: brick_gold break" to In Review</span><div style="flex:1"></div><button style="padding:9px 14px;border-radius:8px;border:none;background:transparent;color:#a3a6b4;cursor:pointer">Cancel</button><button style="padding:9px 16px;border-radius:8px;border:none;background:#ffb38a;color:#1a120c;font-weight:600;cursor:pointer">Export 2 sprites</button></div>
+</div></div></div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview": {"width": 1440, "height": 900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
