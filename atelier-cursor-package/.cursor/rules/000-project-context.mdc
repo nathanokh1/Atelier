@@ -1,0 +1,19 @@
+---
+description: Project context and orientation — read first in any session
+globs:
+alwaysApply: true
+---
+
+# Atelier — Project Context
+
+Atelier is a browser-first art studio. Photo is the working layered editor. Pixel (sprites) starts at Slice 1. Core loop today: import images → stack/edit on layers → cut/paste/resize → export or save project.
+
+Before doing anything else in a session:
+1. Read `atelier-cursor-package/PROJECT_BRAIN.md` — decisions log, principles, open questions.
+2. Read `atelier-cursor-package/DECISIONS.md` — locked decisions. Don't reopen them.
+3. Read `atelier-cursor-package/TAXONOMY.md` — use these exact terms. Don't invent synonyms.
+4. Read `atelier-cursor-package/ARCHITECTURE.md` — module boundaries. Pixi is imported only inside `core/render`, and UI handlers never mutate the LayerGraph directly — always go through a Command.
+
+This project follows Forge's approval-by-exception model: don't stop for confirmation on routine implementation work. Do stop for: kickoff of a new module, a material architectural change, a direction decision not already covered in DECISIONS.md, or anything touching the safety floor (data loss risk — e.g. changes to the save/load path).
+
+KISS. If a feature isn't in ROADMAP.md's current milestone, it doesn't belong in this PR.

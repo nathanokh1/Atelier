@@ -47,11 +47,11 @@ export default function Home() {
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-accent to-fuchsia-500 text-white shadow-glow">
             <Sparkles size={18} />
           </div>
-          <span className="text-sm font-semibold">CreativePhotoEditor</span>
+          <span className="text-sm font-semibold">Atelier</span>
         </div>
         <nav className="flex items-center gap-4 text-sm">
           <a
-            href="https://github.com/nathanokh1/CreativePhotoEditor"
+            href="https://github.com/nathanokh1/Atelier"
             target="_blank"
             rel="noreferrer"
             className="flex items-center gap-1.5 text-ink-dim transition-colors hover:text-ink"
@@ -113,7 +113,7 @@ export default function Home() {
 
       <footer className="relative z-10 border-t border-panel-border">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-6 py-6 text-xs text-ink-faint sm:flex-row">
-          <span>© {new Date().getFullYear()} CreativePhotoEditor — free & open source.</span>
+          <span>© {new Date().getFullYear()} Atelier — free & open source.</span>
           <span>Browser today · Windows, macOS & mobile coming soon.</span>
         </div>
       </footer>

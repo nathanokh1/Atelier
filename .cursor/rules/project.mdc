@@ -1,21 +1,18 @@
 ---
-description: Project-specific rules for CreativePhotoEditor. Extends global Forge.
+description: Project-specific rules for Atelier. Extends global Forge.
 globs:
 alwaysApply: true
 ---
-# Project: CreativePhotoEditor
+# Project: Atelier
 
-A free, browser-first, streamlined photo editor (layers, move/resize,
-blend, export). Browser is the MVP; Windows/mac/mobile come later by wrapping the
-same browser core. Full design docs live in `CreativePhotoEditor-cursor-package/`
-(PROJECT_BRAIN, ARCHITECTURE, ROADMAP, TAXONOMY) — read those before large work.
+A free, browser-first art studio (formerly CreativePhotoEditor). One engine, two workspaces: **Photo** (layers, move/resize, blend, export — working today) and **Pixel** (sprites for games — later slices). Browser is the product; a desktop wrap comes later around the same core. Full design docs live in `atelier-cursor-package/` (PROJECT_BRAIN, DECISIONS, ARCHITECTURE, ROADMAP, TAXONOMY) — read those before large work.
 
 ## Stack overrides
 - Framework: Next.js 14 (App Router) + TypeScript strict.
 - Rendering: PixiJS (WebGL) — imported ONLY inside `core/render`.
 - UI state: Zustand (`state/`) mirrors the LayerGraph; the LayerGraph is the source of truth.
-- Styling: Tailwind CSS. File I/O: JSZip for the `.cpe` container.
-- Deploy: Vercel (main → Production, dev → Preview). Repo: github.com/nathanokh1/CreativePhotoEditor.
+- Styling: Tailwind CSS. File I/O: JSZip for the project container (`.cpe` today; `.atelier` with the format bump).
+- Deploy: Vercel (main → Production, dev → Preview). Repo: github.com/nathanokh1/Atelier.
 
 ## Conventions
 - Every LayerGraph mutation goes through a Command (`core/commands`) — never mutate
@@ -26,5 +23,6 @@ same browser core. Full design docs live in `CreativePhotoEditor-cursor-package/
 - KISS. If a feature isn't in the current ROADMAP phase, it's out of scope.
 
 ## Notes
-- Current phase: Phase 1 (MVP core loop) — import → layer → move/scale → export → save/load .cpe.
+- Current milestone: M0 repo sync and rename. Photo is the working workspace. Do not start Slice 1 (Pixel) until M0 is accepted.
 - Forge tooling lives in `/forge` (gitignored; its own repo at github.com/nathanokh1/Forge).
+- Work tracking is Linear, team Portfolio, project Atelier. `memory/backlog.md` only points there.

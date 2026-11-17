@@ -1,8 +1,8 @@
 {
-  "name": "creative-photo-editor",
+  "name": "atelier",
   "version": "0.1.0",
   "private": true,
-  "description": "A free, browser-first, streamlined photo editor.",
+  "description": "Atelier — a free, browser-first studio for layered photos and, later, game sprites.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

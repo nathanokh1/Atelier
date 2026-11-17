@@ -1,4 +1,4 @@
-# CreativePhotoEditor — Manual Test Cases
+# Atelier — Manual Test Cases
 
 A checklist for you to walk through the app by hand. Each case has **steps** and
 an **expected result**. Check the box if it passes; note anything odd in the

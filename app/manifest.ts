@@ -2,10 +2,10 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "CreativePhotoEditor",
-    short_name: "PhotoEditor",
+    name: "Atelier",
+    short_name: "Atelier",
     description:
-      "A free, browser-first photo editor. Layers, move, resize, blend modes and export — no install, your images never leave your device.",
+      "A free, browser-first studio. Layers, move, resize, blend modes and export — no install, your images never leave your device.",
     start_url: "/editor",
     scope: "/",
     display: "standalone",

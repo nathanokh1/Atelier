@@ -8,6 +8,15 @@ Related: [[capability-map]] | [[backlog]]
 
 ---
 
+### 2026-11-17 13:20
+- TYPE: DECISION
+  target: Adopt atelier-cursor-package v2 and rebrand to Atelier
+  by: builder
+  project: Atelier
+  reason: M0. Replaced CreativePhotoEditor-cursor-package with atelier-cursor-package. Carried the old package engine rules (.cursor/rules 000–060) because the v2 drop did not include them. Wrote .cursor/rules/40-atelier.mdc because that file was missing from the drop. Renamed the product in package.json, the landing page, the title bar, the README, and the settings footer. Linear is the backlog. .cpe save format is unchanged until NOK-182.
+
+---
+
 ### 2026-07-20 14:45
 - TYPE: DECISION
   target: Suite vision + platform stance (doc for Claude app)

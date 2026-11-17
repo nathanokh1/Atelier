@@ -46,7 +46,7 @@ export function TopBar({ onOpenSettings }: { onOpenSettings: () => void }) {
           <ImageIcon size={18} />
         </div>
         <div className="leading-tight">
-          <p className="text-sm font-semibold text-ink">CreativePhotoEditor</p>
+          <p className="text-sm font-semibold text-ink">Atelier</p>
           <p className="-mt-0.5 text-[11px] text-ink-faint">{docName}</p>
         </div>
       </div>

@@ -1,6 +1,6 @@
 # Atelier walkthrough
 
-Screenshots of the app as it runs today (the interface still says CreativePhotoEditor). Captured from the local dev server at `http://localhost:3000`.
+Screenshots of the editor before the Atelier rename. Captured from the local dev server at `http://localhost:3000`.
 
 | File | What it shows |
 |------|----------------|

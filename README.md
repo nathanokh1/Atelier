@@ -1,11 +1,12 @@
-# CreativePhotoEditor
+# Atelier
 
-A **free**, browser-first, streamlined photo editor. Import images, stack
+A **free**, browser-first studio. Photo is the working workspace: import images, stack
 them on layers, move / resize, blend, and export a clean flattened image — with
 full undo/redo. Nothing to install and your images never leave your device.
+Pixel, the sprite workspace, comes in later slices.
 
-> Browser is the MVP. Windows, macOS and mobile shells come later by wrapping the
-> same browser core (see `CreativePhotoEditor-cursor-package/ROADMAP.md`).
+> Browser is the product. A desktop wrap comes later around the
+> same browser core (see `atelier-cursor-package/ROADMAP.md`).
 
 ## Tech stack
 
@@ -15,7 +16,7 @@ full undo/redo. Nothing to install and your images never leave your device.
 | Rendering      | PixiJS (WebGL) — contained in `core/render`     |
 | UI state       | Zustand (mirrors the LayerGraph for React)      |
 | Styling        | Tailwind CSS                                     |
-| File I/O       | JSZip for the `.cpe` project container          |
+| File I/O       | JSZip for the `.cpe` project container (`.atelier` comes with the format bump) |
 
 ## Architecture
 

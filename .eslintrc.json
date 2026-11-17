@@ -1,4 +1,4 @@
 {
   "extends": "next/core-web-vitals",
-  "ignorePatterns": ["forge/**", "CreativePhotoEditor-cursor-package/**"]
+  "ignorePatterns": ["forge/**", "atelier-cursor-package/**"]
 }

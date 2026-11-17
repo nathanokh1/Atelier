@@ -158,7 +158,7 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
         </div>
 
         <div className="border-t border-panel-border px-5 py-3 text-center text-[11px] text-ink-faint">
-          CreativePhotoEditor · free & open · your images never leave your device
+          Atelier · free & open · your images never leave your device
         </div>
       </div>
     </div>

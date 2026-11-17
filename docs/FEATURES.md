@@ -1,8 +1,8 @@
-# CreativePhotoEditor — Feature List
+# Atelier — Feature List
 
-A living catalog of what we're building, from basics to advanced. This is the
-menu we pick from each cycle. It complements (does not replace) the phase gates
-in `CreativePhotoEditor-cursor-package/ROADMAP.md`.
+A living catalog of the Photo workspace, from basics to advanced. This is the
+menu we pick from each cycle. Milestones live in Linear and
+`atelier-cursor-package/ROADMAP.md`.
 
 **Status legend:** ✅ shipped · 🔜 next up · 📋 planned · 🧪 experimental/later · ⛔ out of scope (for now)
 

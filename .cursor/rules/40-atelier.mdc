@@ -1,0 +1,17 @@
+---
+description: Atelier product rules. Photo stays working; Pixel follows the cursor package. Extends project.mdc.
+globs:
+alwaysApply: true
+---
+# Atelier
+
+Atelier is the product (formerly CreativePhotoEditor). One engine, two workspaces: **Photo** (the editor that exists today) and **Pixel** (sprites, not started until Slice 1).
+
+Design docs live in `atelier-cursor-package/`: PROJECT_BRAIN, DECISIONS, TAXONOMY, ARCHITECTURE, ROADMAP, TOOL-REFERENCE, and the current slice plan. Use those terms. DECISIONS.md is locked; flag a conflict instead of reopening it.
+
+- Every document mutation goes through a Command. Undo/redo is not optional.
+- `pixi.js` is imported only inside `core/render`. `core/` never imports React or Next.
+- Photo must keep working as it does today. Run `docs/TEST-CASES.md` after any core change.
+- Do not build ahead of the current ROADMAP milestone.
+- New saves still use `.cpe` until the format bump (NOK-182). Old `.cpe` files must keep opening.
+- `.cursor/rules/40-atelier.mdc` was missing from the v2 package drop, so this file was written from the session kickoff.

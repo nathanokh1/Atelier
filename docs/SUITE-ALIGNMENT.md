@@ -1,5 +1,7 @@
 # Creative Suite — Alignment Brief for Claude
 
+> **2026-11-17:** App 1 is **Atelier**. Design docs live in `atelier-cursor-package/`. The rest of this brief is the July 2026 handoff and still uses the old name.
+
 > **Purpose:** Hand this document to Claude (Claude app / Claude.ai) so a new chat starts aligned on what we already built, what the suite should become, and how we want to approach platforms.  
 > **Author:** Nathan (Approver) + Cursor agents on CreativePhotoEditor  
 > **Date:** 2026-07-20  
