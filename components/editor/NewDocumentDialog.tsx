@@ -25,6 +25,7 @@ export function NewDocumentDialog({ open, onClose }: NewDocumentDialogProps) {
   const [width, setWidth] = useState(1280);
   const [height, setHeight] = useState(720);
   const [background, setBackground] = useState<"transparent" | string>("transparent");
+  const [kind, setKind] = useState<"photo" | "sprite">("photo");
 
   if (!open) return null;
 
@@ -42,6 +43,38 @@ export function NewDocumentDialog({ open, onClose }: NewDocumentDialogProps) {
         </div>
 
         <div className="space-y-4 px-5 py-4">
+          <div>
+            <p className="mb-2 text-xs text-ink-dim">Kind</p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => {
+                  setKind("photo");
+                  setWidth(1280);
+                  setHeight(720);
+                }}
+                className={cn(
+                  "rounded-md px-2.5 py-1 text-xs",
+                  kind === "photo" ? "bg-accent/20 text-ink" : "bg-panel-sunken text-ink-dim",
+                )}
+              >
+                Photo
+              </button>
+              <button
+                onClick={() => {
+                  setKind("sprite");
+                  setWidth(16);
+                  setHeight(16);
+                }}
+                className={cn(
+                  "rounded-md px-2.5 py-1 text-xs",
+                  kind === "sprite" ? "bg-accent/20 text-ink" : "bg-panel-sunken text-ink-dim",
+                )}
+              >
+                Sprite
+              </button>
+            </div>
+          </div>
+
           <label className="block text-xs text-ink-dim">
             Name
             <input
@@ -77,7 +110,14 @@ export function NewDocumentDialog({ open, onClose }: NewDocumentDialogProps) {
           <div>
             <p className="mb-2 text-xs text-ink-dim">Presets</p>
             <div className="flex flex-wrap gap-2">
-              {PRESETS.map((p) => (
+              {(kind === "sprite"
+                ? [
+                    { label: "16×16", width: 16, height: 16 },
+                    { label: "32×32", width: 32, height: 32 },
+                    { label: "64×64", width: 64, height: 64 },
+                  ]
+                : PRESETS
+              ).map((p) => (
                 <button
                   key={p.label}
                   onClick={() => {
@@ -125,7 +165,7 @@ export function NewDocumentDialog({ open, onClose }: NewDocumentDialogProps) {
           </button>
           <button
             onClick={() => {
-              void newDocument({ name, width, height, background });
+              void newDocument({ name, width, height, background, kind });
               onClose();
             }}
             className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover"

@@ -4,6 +4,7 @@ export { MoveTool } from "./move-tool";
 export { TransformTool } from "./transform-tool";
 export { HandTool } from "./hand-tool";
 export { SelectionRectTool } from "./selection-rect-tool";
+export { EllipseMarqueeTool } from "./ellipse-marquee-tool";
 export { LassoTool } from "./lasso-tool";
 export { CropTool } from "./crop-tool";
 export { PaintTool } from "./paint-tool";

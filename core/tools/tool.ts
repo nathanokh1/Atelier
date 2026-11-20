@@ -22,6 +22,7 @@ export type ToolId =
   | "transform"
   | "hand"
   | "select"
+  | "ellipse-select"
   | "lasso"
   | "wand"
   | "crop"
@@ -30,7 +31,12 @@ export type ToolId =
   | "eraser"
   | "pen"
   | "clone"
-  | "heal";
+  | "heal"
+  | "bucket"
+  | "line"
+  | "rect"
+  | "ellipse"
+  | "eyedropper";
 
 /**
  * A Tool is a mode that decides what pointer input does on the Canvas. Exactly

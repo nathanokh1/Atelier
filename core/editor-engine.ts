@@ -7,6 +7,8 @@ import {
   MoveLayerCommand,
   ReorderLayerCommand,
   ReplaceLayerSourceCommand,
+  ReplaceSpritePixelsCommand,
+  SetPixelSettingsCommand,
   SetCanvasSizeCommand,
   SetLayerMaskCommand,
   SetLayerPropsCommand,
@@ -59,7 +61,13 @@ import {
   buildPath2D,
   penPathToMask,
   type SelectionMask,
+  flipHorizontal,
+  flipVertical,
+  movePixels,
+  rotateImage,
+  stepSpriteZoom,
 } from "./file-io";
+import { readPixelImage, writePixelSource } from "./tools/pixel-draw-tool";
 import { PointerSample, ToolContext, ToolId, ToolManager, WandStyle } from "./tools";
 
 export interface PenApplyOptions {
@@ -107,6 +115,7 @@ export interface NewDocumentOptions {
   width: number;
   height: number;
   background?: "transparent" | string;
+  kind?: "photo" | "sprite";
 }
 
 function hexToRgbLocal(hex: string): { r: number; g: number; b: number } {
@@ -488,7 +497,13 @@ export class EditorEngine {
     this.tools?.pointerDown(pt);
   }
 
+  private spriteCursor: { x: number; y: number } | null = null;
+
   pointerMove(pt: PointerSample): void {
+    if (this.renderer && this.graph.getKind() === "sprite") {
+      const doc = this.renderer.screenToDocument(pt.canvasX, pt.canvasY);
+      this.spriteCursor = { x: Math.floor(doc.x), y: Math.floor(doc.y) };
+    }
     this.tools?.pointerMove(pt);
   }
 
@@ -499,7 +514,10 @@ export class EditorEngine {
   zoomAt(canvasX: number, canvasY: number, factor: number): void {
     if (!this.renderer) return;
     const v = this.renderer.getViewport();
-    const newZoom = Math.max(0.05, Math.min(32, v.zoom * factor));
+    const sprite = this.graph.getKind() === "sprite";
+    const newZoom = sprite
+      ? stepSpriteZoom(v.zoom, factor >= 1 ? 1 : -1)
+      : Math.max(0.05, Math.min(32, v.zoom * factor));
     const wx = (canvasX - v.x) / v.zoom;
     const wy = (canvasY - v.y) / v.zoom;
     this.renderer.setViewport({
@@ -507,6 +525,39 @@ export class EditorEngine {
       x: canvasX - wx * newZoom,
       y: canvasY - wy * newZoom,
     });
+  }
+
+  spriteReadout(): {
+    x: number | null;
+    y: number | null;
+    width: number;
+    height: number;
+    colorMode: string;
+    frame: number;
+    frameCount: number;
+  } | null {
+    if (this.graph.getKind() !== "sprite") return null;
+    const size = this.graph.getCanvasSize();
+    const frames = this.graph.getFrames();
+    const index = frames.findIndex((f) => f.id === this.graph.getActiveFrameId());
+    return {
+      x: this.spriteCursor?.x ?? null,
+      y: this.spriteCursor?.y ?? null,
+      width: size.width,
+      height: size.height,
+      colorMode: this.graph.getPixelSettings()?.colorMode ?? "rgb",
+      frame: Math.max(1, index + 1),
+      frameCount: Math.max(1, frames.length),
+    };
+  }
+
+  toggleSpriteGrid(which: "pixel" | "cell"): void {
+    const current = this.graph.getPixelSettings();
+    if (!current || this.graph.getKind() !== "sprite") return;
+    const next = which === "pixel"
+      ? { ...current, pixelGrid: !current.pixelGrid }
+      : { ...current, grid: { ...current.grid, visible: !current.grid.visible } };
+    this.bus.dispatch(new SetPixelSettingsCommand(next));
   }
 
   fitToView(): void {
@@ -539,6 +590,25 @@ export class EditorEngine {
       background: opts.background ?? "transparent",
     };
     this.graph.replaceWith([], { width: opts.width, height: opts.height }, meta);
+    if (opts.kind === "sprite") {
+      this.graph.setKind("sprite");
+      const blank = document.createElement("canvas");
+      blank.width = Math.max(1, opts.width);
+      blank.height = Math.max(1, opts.height);
+      if (opts.background && opts.background !== "transparent") {
+        const ctx = blank.getContext("2d");
+        if (ctx) {
+          ctx.fillStyle = opts.background;
+          ctx.fillRect(0, 0, blank.width, blank.height);
+        }
+      }
+      const layer = this.graph.createRasterLayer("Sprite", {
+        width: blank.width,
+        height: blank.height,
+        bitmap: blank,
+      }, { x: 0, y: 0 });
+      this.bus.dispatch(new AddLayerCommand(layer));
+    }
     this.history.clear();
     this.renderer?.fitToView();
   }
@@ -804,7 +874,48 @@ export class EditorEngine {
     if (!id) return;
     const layer = this.graph.getLayer(id);
     if (!layer || layer.locked) return;
+    if (this.graph.getKind() === "sprite") {
+      this.commitSpritePixels(id, (image) => movePixels(image, dx, dy, this.spriteMask()), "Nudge");
+      return;
+    }
     this.bus.dispatch(new MoveLayerCommand(id, dx, dy));
+  }
+
+  flipActiveSprite(axis: "horizontal" | "vertical"): void {
+    const id = this.graph.getActiveLayerId();
+    if (!id || this.graph.getKind() !== "sprite") return;
+    const mask = this.spriteMask();
+    this.commitSpritePixels(
+      id,
+      (image) => (axis === "horizontal" ? flipHorizontal(image, mask) : flipVertical(image, mask)),
+      axis === "horizontal" ? "Flip horizontal" : "Flip vertical",
+    );
+  }
+
+  rotateActiveSprite(turns: 1 | 2): void {
+    const id = this.graph.getActiveLayerId();
+    if (!id || this.graph.getKind() !== "sprite") return;
+    const layer = this.graph.getLayer(id);
+    if (!layer) return;
+    const next = rotateImage(readPixelImage(layer.source), turns);
+    const canvas = turns === 1 ? { width: next.width, height: next.height } : null;
+    this.bus.dispatch(new ReplaceSpritePixelsCommand(id, writePixelSource(next), canvas, turns === 1 ? "Rotate 90°" : "Rotate 180°"));
+  }
+
+  private spriteMask(): Uint8Array | undefined {
+    const mask = this.renderer?.getSelectionMask();
+    return mask?.data;
+  }
+
+  private commitSpritePixels(
+    layerId: string,
+    edit: (image: ReturnType<typeof readPixelImage>) => ReturnType<typeof readPixelImage>,
+    label: string,
+  ): void {
+    const layer = this.graph.getLayer(layerId);
+    if (!layer || layer.type === "group") return;
+    const next = edit(readPixelImage(layer.source));
+    this.bus.dispatch(new ReplaceSpritePixelsCommand(layerId, writePixelSource(next), null, label));
   }
 
   async applyLayerAdjustments(id: string, opts: AdjustmentOptions): Promise<void> {
@@ -1180,15 +1291,15 @@ export class EditorEngine {
   async saveProjectFile(): Promise<void> {
     const blob = await saveProject(this.graph);
     const name = this.graph.getMeta().name || "project";
-    downloadBlob(blob, `${name}.cpe`);
+    downloadBlob(blob, `${name}.atelier`);
   }
 
-  /** Serialize the document to a `.cpe` Blob (for autosave — no download). */
+  /** Serialize the document to an `.atelier` Blob (for autosave — no download). */
   async serialize(): Promise<Blob> {
     return saveProject(this.graph);
   }
 
-  /** Restore a document from a `.cpe` Blob (for autosave restore). */
+  /** Restore a document from an `.atelier` or legacy `.cpe` Blob (for autosave restore). */
   async deserialize(blob: Blob): Promise<void> {
     await loadProject(blob, this.graph);
     this.history.clear();

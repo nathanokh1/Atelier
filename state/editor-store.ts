@@ -65,11 +65,23 @@ interface EditorState {
   /** Open documents (tabs), in tab order. */
   docs: { id: string; name: string }[];
   activeDocId: string | null;
+  documentKind: "photo" | "sprite";
+  spriteReadout: {
+    x: number | null;
+    y: number | null;
+    width: number;
+    height: number;
+    colorMode: string;
+    frame: number;
+    frameCount: number;
+  } | null;
+  toggleSpriteGrid: (which: "pixel" | "cell") => void;
   newTab: (opts?: {
     name?: string;
     width?: number;
     height?: number;
     background?: "transparent" | string;
+    kind?: "photo" | "sprite";
   }) => Promise<void>;
   switchTab: (id: string) => void;
   closeTab: (id: string) => Promise<void>;
@@ -128,6 +140,7 @@ interface EditorState {
     width: number;
     height: number;
     background?: "transparent" | string;
+    kind?: "photo" | "sprite";
   }) => Promise<void>;
 
   selectLayer: (id: string, opts?: { additive?: boolean }) => void;
@@ -175,6 +188,8 @@ interface EditorState {
     split?: boolean;
   }) => Promise<number>;
   nudge: (dx: number, dy: number) => void;
+  flipSprite: (axis: "horizontal" | "vertical") => void;
+  rotateSprite: (turns: 1 | 2) => void;
   setPaintStyle: (patch: {
     color?: string;
     size?: number;
@@ -372,6 +387,8 @@ export const useEditor = create<EditorState>((set, get) => {
   historyApplied: 0,
   zoom: 1,
   docName: "Untitled",
+  documentKind: "photo",
+  spriteReadout: null,
   busy: null,
   engine: null,
 
@@ -443,6 +460,7 @@ export const useEditor = create<EditorState>((set, get) => {
       width: opts.width ?? 1280,
       height: opts.height ?? 720,
       background: opts.background ?? "transparent",
+      kind: opts.kind ?? "photo",
     });
     const id = createDoc(engine);
     rebuildDocsView();
@@ -515,6 +533,8 @@ export const useEditor = create<EditorState>((set, get) => {
       historyLabels: timeline.labels,
       historyApplied: timeline.applied,
       docName: engine.graph.getMeta().name,
+      documentKind: engine.graph.getKind(),
+      spriteReadout: engine.spriteReadout(),
       zoom: renderer ? renderer.getViewport().zoom : 1,
       activeTool: engine.getTools().getActiveId(),
       penHasPath: pen.hasPath,
@@ -762,6 +782,18 @@ export const useEditor = create<EditorState>((set, get) => {
     }
   },
   nudge: (dx, dy) => get().engine?.nudgeActiveLayer(dx, dy),
+  flipSprite: (axis) => {
+    get().engine?.flipActiveSprite(axis);
+    get().refresh();
+  },
+  rotateSprite: (turns) => {
+    get().engine?.rotateActiveSprite(turns);
+    get().refresh();
+  },
+  toggleSpriteGrid: (which) => {
+    get().engine?.toggleSpriteGrid(which);
+    get().refresh();
+  },
   setPaintStyle: (patch) => get().engine?.setPaintStyle(patch),
   setShowGuides: (show) => get().engine?.setShowGuides(show),
 

@@ -92,6 +92,66 @@ export interface DocumentMeta {
   background?: CanvasBackground;
 }
 
+/** Photo documents stay single-frame. Sprites can have many. */
+export type DocumentKind = "photo" | "sprite";
+
+export interface Frame {
+  id: string;
+  /** How long this frame shows, in milliseconds. Photos use a single frame. */
+  durationMs: number;
+}
+
+/** Another cel whose pixels this one displays and edits. */
+export interface CelLink {
+  layerId: string;
+  frameId: string;
+}
+
+/**
+ * Pixels for one Layer at one Frame. Photo code keeps reading `Layer.source`;
+ * that field mirrors the active frame's resolved cel.
+ */
+export interface Cel {
+  layerId: string;
+  frameId: string;
+  /** null = empty cel (nothing drawn on this frame). */
+  source: RasterSource | null;
+  offsetX: number;
+  offsetY: number;
+  opacity: number;
+  linkedTo?: CelLink;
+}
+
+export interface PaletteRamp {
+  name: string;
+  indexes: number[];
+}
+
+export interface Palette {
+  id: string;
+  name: string;
+  /** "#RRGGBB" or "#RRGGBBAA". */
+  colors: string[];
+  ramps: PaletteRamp[];
+  /** Slice 2. Stored so a later palette swap does not change the file shape. */
+  swaps?: { name: string; colors: string[] }[];
+}
+
+export interface PixelGridSettings {
+  width: number;
+  height: number;
+  offsetX: number;
+  offsetY: number;
+  visible: boolean;
+}
+
+export interface PixelSettings {
+  colorMode: "rgb";
+  paletteOnly: boolean;
+  pixelGrid: boolean;
+  grid: PixelGridSettings;
+}
+
 /** Events emitted by the LayerGraph so the renderer + UI store can react. */
 export type LayerGraphEvent =
   | { type: "layer-added"; layerId: string }
@@ -100,6 +160,7 @@ export type LayerGraphEvent =
   | { type: "layer-reordered" }
   | { type: "active-changed"; layerId: string | null }
   | { type: "canvas-resized" }
-  | { type: "graph-replaced" };
+  | { type: "graph-replaced" }
+  | { type: "frame-changed"; frameId: string };
 
 export type LayerGraphListener = (event: LayerGraphEvent) => void;

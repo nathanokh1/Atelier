@@ -1,4 +1,6 @@
-import { MoveLayerCommand } from "../commands";
+import { MoveLayerCommand, ReplaceSpritePixelsCommand } from "../commands";
+import { movePixels } from "../file-io/pixel-ops";
+import { readPixelImage, writePixelSource } from "./pixel-draw-tool";
 import { layerBounds } from "./transform-math";
 import { PointerSample, Tool, ToolContext } from "./tool";
 
@@ -47,6 +49,10 @@ export class MoveTool implements Tool {
   onPointerMove(pt: PointerSample, ctx: ToolContext): void {
     if (!this.dragging || !this.layerId) return;
     const now = ctx.renderer.screenToDocument(pt.canvasX, pt.canvasY);
+    if (ctx.graph.getKind() === "sprite") {
+      this.lastDelta = { dx: now.x - this.startDoc.x, dy: now.y - this.startDoc.y };
+      return;
+    }
     let dx = now.x - this.startDoc.x;
     let dy = now.y - this.startDoc.y;
     if (pt.shiftKey) {
@@ -98,6 +104,16 @@ export class MoveTool implements Tool {
     this.layerId = null;
     ctx.renderer.setSnapLines([]);
     ctx.renderer.clearPreview(id);
+    if (ctx.graph.getKind() === "sprite") {
+      const layer = ctx.graph.getLayer(id);
+      const ix = Math.round(dx);
+      const iy = Math.round(dy);
+      if (layer && (ix !== 0 || iy !== 0)) {
+        const next = movePixels(readPixelImage(layer.source), ix, iy, ctx.renderer.getSelectionMask()?.data);
+        ctx.bus.dispatch(new ReplaceSpritePixelsCommand(id, writePixelSource(next), null, "Move pixels"));
+      }
+      return;
+    }
     if (Math.abs(dx) > 0.001 || Math.abs(dy) > 0.001) {
       ctx.bus.dispatch(new MoveLayerCommand(id, dx, dy));
     }

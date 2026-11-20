@@ -16,6 +16,7 @@ import { buildAdjustmentMatrix } from "./color-matrix";
 import { HandleId, handlePositions, layerBounds } from "../tools/transform-math";
 import type { SelectionRect } from "../file-io/clipboard";
 import { maskToOverlayCanvas, type SelectionMask } from "../file-io/selection";
+import { cellGridLines, fitSpriteZoom, pixelGridLines, showPixelGrid } from "../file-io/pixel-view";
 import type { PenNode } from "../file-io/pen";
 
 /** Live pen-path preview (document-space). */
@@ -255,7 +256,8 @@ export class Renderer {
     const { width: cw, height: ch } = this.graph.getCanvasSize();
     const vw = this.app.renderer.width / (window.devicePixelRatio || 1);
     const vh = this.app.renderer.height / (window.devicePixelRatio || 1);
-    const zoom = Math.min(vw / cw, vh / ch) * 0.9;
+    const continuous = Math.min(vw / cw, vh / ch) * 0.9;
+    const zoom = this.graph.getKind() === "sprite" ? fitSpriteZoom(continuous) : continuous;
     this.view = {
       zoom,
       x: (vw - cw * zoom) / 2,
@@ -342,6 +344,21 @@ export class Renderer {
         .stroke({ width: 1 / this.view.zoom, color: 0xffffff, alpha: 0.9 });
     }
 
+    if (this.graph.getKind() === "sprite") {
+      const pixel = this.graph.getPixelSettings();
+      if (pixel && showPixelGrid(this.view.zoom, pixel.pixelGrid)) {
+        this.strokeDocLines(g, pixelGridLines(size.width, size.height), 0x94a3b8, 0.55);
+      }
+      if (pixel?.grid.visible) {
+        this.strokeDocLines(
+          g,
+          cellGridLines(size.width, size.height, pixel.grid.width, pixel.grid.height, pixel.grid.offsetX, pixel.grid.offsetY),
+          0x38bdf8,
+          0.8,
+        );
+      }
+    }
+
     if (this.showGuides) {
       const step = 50;
       for (let x = 0; x <= size.width; x += step) {
@@ -365,6 +382,18 @@ export class Renderer {
 
     this.drawPenPreview(g);
     this.drawToolCursor(g);
+  }
+
+  private strokeDocLines(
+    g: Graphics,
+    lines: { vertical: number[]; horizontal: number[] },
+    color: number,
+    alpha: number,
+  ): void {
+    const width = 1 / this.view.zoom;
+    for (const x of lines.vertical) g.moveTo(x, 0).lineTo(x, this.graph?.getCanvasSize().height ?? 0);
+    for (const y of lines.horizontal) g.moveTo(0, y).lineTo(this.graph?.getCanvasSize().width ?? 0, y);
+    g.stroke({ width, color, alpha });
   }
 
   private drawPenPreview(g: Graphics): void {
@@ -577,6 +606,8 @@ export class Renderer {
       ? this.compositeMaskedCanvas(layer.source, maskBitmap)
       : (layer.source.bitmap as HTMLImageElement);
     const texture = Texture.from(src as HTMLImageElement, true);
+    const textureSource = texture?.source ?? null;
+    if (this.graph?.getKind() === "sprite" && textureSource) textureSource.scaleMode = "nearest";
     this.textures.set(layer.id, texture);
     this.textureBitmaps.set(layer.id, layer.source.bitmap);
     this.textureMasks.set(layer.id, maskBitmap);

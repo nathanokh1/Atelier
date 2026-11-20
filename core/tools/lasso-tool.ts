@@ -1,3 +1,4 @@
+import { lassoMask } from "../file-io/pixel-ops";
 import { combineMask, polygonMask } from "../file-io/selection";
 import { PointerSample, Tool, ToolContext } from "./tool";
 
@@ -33,6 +34,18 @@ export class LassoTool implements Tool {
     const points = this.points;
     this.points = [];
     if (points.length < 3) return;
+
+    if (ctx.graph.getKind() === "sprite") {
+      const layer = ctx.graph.getActiveLayer();
+      if (!layer) return;
+      const local = points.map((p) => ({
+        x: Math.floor((p.x - layer.transform.x) / (layer.transform.scaleX || 1)),
+        y: Math.floor((p.y - layer.transform.y) / (layer.transform.scaleY || 1)),
+      }));
+      const data = lassoMask(layer.source.width, layer.source.height, local);
+      ctx.renderer.setSelectionMask({ width: layer.source.width, height: layer.source.height, data });
+      return;
+    }
 
     const { width, height } = ctx.graph.getCanvasSize();
     const mask = polygonMask(width, height, points);

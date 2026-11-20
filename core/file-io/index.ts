@@ -5,4 +5,6 @@ export * from "./clipboard";
 export * from "./selection";
 export * from "./pen";
 export * from "./raster-edit";
+export * from "./pixel-ops";
+export * from "./pixel-view";
 export * from "./auto-layers";

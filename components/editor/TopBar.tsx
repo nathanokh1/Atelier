@@ -67,7 +67,7 @@ export function TopBar({ onOpenSettings }: { onOpenSettings: () => void }) {
       <input
         ref={openRef}
         type="file"
-        accept=".cpe,application/zip"
+        accept=".cpe,.atelier,application/zip"
         hidden
         onChange={(e) => {
           if (e.target.files?.[0]) void openProject(e.target.files[0]);
@@ -94,14 +94,14 @@ export function TopBar({ onOpenSettings }: { onOpenSettings: () => void }) {
       <IconButton
         icon={<FolderOpen size={18} />}
         label="Open project"
-        description="Open a saved .cpe project file, restoring all its layers and edits."
+        description="Open a saved .atelier or .cpe project file, restoring all its layers and edits."
         tooltipSide="bottom"
         onClick={() => openRef.current?.click()}
       />
       <IconButton
         icon={<Save size={18} />}
         label="Save project"
-        description="Save your work as a .cpe file you can reopen later with all layers intact."
+        description="Save your work as a .atelier file you can reopen later with all layers intact."
         shortcut="Ctrl+S"
         tooltipSide="bottom"
         onClick={() => void saveProject()}

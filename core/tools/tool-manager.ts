@@ -5,12 +5,24 @@ import { PenTool } from "./pen-tool";
 import { CloneTool } from "./clone-tool";
 import { HealTool } from "./heal-tool";
 import { SelectionRectTool } from "./selection-rect-tool";
+import { EllipseMarqueeTool } from "./ellipse-marquee-tool";
 import { LassoTool } from "./lasso-tool";
 import { CropTool } from "./crop-tool";
 import { MagicWandTool, DEFAULT_WAND_STYLE, WandStyle } from "./magic-wand-tool";
 import { PointerSample, Tool, ToolContext, ToolId } from "./tool";
 import { TransformTool } from "./transform-tool";
 import { DEFAULT_STROKE_STYLE, StrokeStyle } from "../file-io/raster-edit";
+import { PixelDrawTool, PixelToolMode } from "./pixel-draw-tool";
+
+const PIXEL_MODES: Partial<Record<ToolId, PixelToolMode>> = {
+  pencil: "pencil",
+  eraser: "eraser",
+  bucket: "bucket",
+  line: "line",
+  rect: "rect",
+  ellipse: "ellipse",
+  eyedropper: "eyedropper",
+};
 
 /** Holds the registered Tools and routes pointer events to the active one. */
 export class ToolManager {
@@ -22,6 +34,7 @@ export class ToolManager {
   private maskEditLayerId: string | null = null;
   private snapEnabled = true;
   private penTool: PenTool;
+  private pixelTool: PixelDrawTool;
 
   constructor(private ctx: ToolContext) {
     this.transformTool = new TransformTool();
@@ -31,6 +44,7 @@ export class ToolManager {
     this.register(new MoveTool());
     this.register(this.transformTool);
     this.register(new SelectionRectTool());
+    this.register(new EllipseMarqueeTool());
     this.register(new LassoTool());
     this.register(new MagicWandTool(() => this.wandStyle));
     this.register(new CropTool());
@@ -41,6 +55,12 @@ export class ToolManager {
     this.register(new CloneTool(style));
     this.register(new HealTool(style));
     this.register(new HandTool());
+    this.pixelTool = new PixelDrawTool(
+      () => this.paintStyle.color,
+      (hex) => {
+        this.paintStyle = { ...this.paintStyle, color: hex };
+      },
+    );
     this.activeId = "move";
   }
 
@@ -53,7 +73,8 @@ export class ToolManager {
   }
 
   getActive(): Tool {
-    return this.tools.get(this.activeId)!;
+    if (this.ctx.graph.getKind() === "sprite" && PIXEL_MODES[this.activeId]) return this.pixelTool;
+    return this.tools.get(this.activeId) ?? this.tools.get("move")!;
   }
 
   getActiveId(): ToolId {
@@ -61,6 +82,16 @@ export class ToolManager {
   }
 
   setActive(id: ToolId): void {
+    const pixelMode = PIXEL_MODES[id];
+    if (pixelMode && !this.tools.has(id)) {
+      this.pixelTool.setMode(pixelMode);
+      this.activeId = id;
+      this.ctx.renderer.setShowTransformHandles(false);
+      this.ctx.renderer.setCursorOverride(null);
+      this.ctx.renderer.setToolCursor(null);
+      return;
+    }
+    if (pixelMode) this.pixelTool.setMode(pixelMode);
     if (!this.tools.has(id)) return;
     if (this.activeId === "pen" && id !== "pen") this.penTool.reset(this.ctx);
     this.activeId = id;

@@ -8,6 +8,27 @@ Related: [[capability-map]] | [[backlog]]
 
 ---
 
+### 2026-11-20 15:10
+- TYPE: DECISION
+  target: NOK-185, NOK-187
+  by: builder
+  project: Atelier
+  reason: Sprite zoom is whole steps from 100% to 3200%, including 1800%. Nearest-neighbor sampling stays on. Pixel grid shows from 400% up and the cell grid uses size plus offset; both toggle through one undoable command. Status line shows cursor, size, color mode, frame, and zoom. Pencil hits document pixels through the viewport. Photo zoom stays continuous (10% to 12% on one click). `npm run typecheck` and `npm test` pass (8 tests).
+
+### 2026-11-20 13:40
+- TYPE: DECISION
+  target: NOK-181, NOK-182, NOK-186, NOK-187
+  by: builder
+  project: Atelier
+  reason: Document model v3 (frames and cels) is in the LayerGraph. New saves are .atelier v3; .cpe v1/v2 still loads in memory and is not rewritten. Sprite pencil, eraser, bucket, line, rect, ellipse, and eyedropper commit one command per stroke. Sprite marquee, elliptical marquee, lasso, exact-color wand, pixel move, flip, and 90/180 rotate are in. Photo tools are unchanged. `npm run typecheck` and `npx tsx --test tests/slice1.test.ts` pass (7 tests). Editor smoke: photo canvas loads; New document → Sprite 16×16 adds a Sprite layer and the pixel tools.
+
+### 2026-11-20 12:45
+- TYPE: SETUP
+  target: MacBook bring-up
+  by: builder
+  project: Atelier
+  reason: First session on this Mac. Linked ~/.forge to ~/Projects/Forge, Ops Hub on :8766, Atelier dev server on :3000. Repo clean and matches origin/main. Linear: M0 still current; NOK-95 and NOK-96 are In Review. Layer 0 not up yet (needs mcp-memory-service on Python 3.10+).
+
 ### 2026-11-17 13:20
 - TYPE: DECISION
   target: Adopt atelier-cursor-package v2 and rebrand to Atelier

@@ -24,7 +24,7 @@ const FEATURES = [
   {
     icon: <Save size={20} />,
     title: "Save projects",
-    body: "Keep your layered work in a portable .cpe project file and reopen it anytime.",
+    body: "Keep your layered work in a portable .atelier project file and reopen it anytime. Older .cpe files still open.",
   },
   {
     icon: <Download size={20} />,

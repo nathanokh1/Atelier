@@ -7,6 +7,18 @@ import { useSettings } from "@/state/settings-store";
 import { ContextMenu, ContextMenuItem } from "@/components/ui/ContextMenu";
 import { Rulers } from "./Rulers";
 
+function SpriteStatus() {
+  const readout = useEditor((s) => s.spriteReadout);
+  const zoom = useEditor((s) => s.zoom);
+  if (!readout) return null;
+  const cursor = readout.x === null || readout.y === null ? "—" : `${readout.x}, ${readout.y}`;
+  return (
+    <div className="pointer-events-none absolute bottom-2 left-2 rounded-md border border-panel-border bg-panel/90 px-2 py-1 font-mono text-[11px] text-ink-dim">
+      {cursor} · {readout.width}×{readout.height} · {readout.colorMode.toUpperCase()} · frame {readout.frame}/{readout.frameCount} · {Math.round(zoom * 100)}%
+    </div>
+  );
+}
+
 /** Hosts the PixiJS canvas and translates DOM input into engine tool events. */
 export function CanvasViewport() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -81,6 +93,13 @@ export function CanvasViewport() {
       if (!engine) return;
       const p = toCanvasPoint(e);
       engine.pointerMove({ canvasX: p.x, canvasY: p.y, shiftKey: e.shiftKey, altKey: e.altKey });
+      if (engine.graph.getKind() === "sprite") {
+        const readout = engine.spriteReadout();
+        const current = useEditor.getState().spriteReadout;
+        if (current?.x !== readout?.x || current?.y !== readout?.y) {
+          useEditor.setState({ spriteReadout: readout });
+        }
+      }
     },
     [toCanvasPoint],
   );
@@ -156,6 +175,7 @@ export function CanvasViewport() {
       />
 
       {ready && <Rulers />}
+      {ready && <SpriteStatus />}
 
       {menu && (
         <ContextMenu x={menu.x} y={menu.y} items={canvasMenuItems()} onClose={() => setMenu(null)} />

@@ -4,3 +4,4 @@ export * from "./command-bus";
 export * from "./layer-commands";
 export * from "./canvas-commands";
 export * from "./raster-commands";
+export * from "./frame-commands";

@@ -20,6 +20,15 @@ import {
   SquareDashedMousePointer,
   Type,
   Wand2,
+  PaintBucket,
+  Minus,
+  Pipette,
+  FlipHorizontal2,
+  FlipVertical2,
+  RotateCw,
+  RotateCcw,
+  Grid3x3,
+  LayoutGrid,
   ZoomIn,
   ZoomOut,
 } from "lucide-react";
@@ -128,9 +137,64 @@ const TOOLS: {
   },
 ];
 
+const SPRITE_TOOLS: {
+  id: ToolId;
+  label: string;
+  description: string;
+  shortcut: string;
+  icon: React.ReactNode;
+}[] = [
+  {
+    id: "bucket",
+    label: "Paint bucket",
+    description: "Fill a contiguous area of the same color with the current color.",
+    shortcut: "G",
+    icon: <PaintBucket size={18} />,
+  },
+  {
+    id: "line",
+    label: "Line",
+    description: "Drag a one-pixel line.",
+    shortcut: "",
+    icon: <Minus size={18} />,
+  },
+  {
+    id: "rect",
+    label: "Rectangle",
+    description: "Drag a rectangle outline on whole pixels.",
+    shortcut: "",
+    icon: <Square size={18} />,
+  },
+  {
+    id: "ellipse",
+    label: "Ellipse",
+    description: "Drag an ellipse outline on whole pixels.",
+    shortcut: "",
+    icon: <Circle size={18} />,
+  },
+  {
+    id: "ellipse-select",
+    label: "Elliptical marquee",
+    description: "Drag an ellipse to select whole pixels.",
+    shortcut: "",
+    icon: <Circle size={18} />,
+  },
+  {
+    id: "eyedropper",
+    label: "Eyedropper",
+    description: "Pick the color of a pixel.",
+    shortcut: "",
+    icon: <Pipette size={18} />,
+  },
+];
+
 export function Toolbar() {
   const activeTool = useEditor((s) => s.activeTool);
+  const documentKind = useEditor((s) => s.documentKind);
   const setTool = useEditor((s) => s.setTool);
+  const flipSprite = useEditor((s) => s.flipSprite);
+  const rotateSprite = useEditor((s) => s.rotateSprite);
+  const toggleSpriteGrid = useEditor((s) => s.toggleSpriteGrid);
   const zoomIn = useEditor((s) => s.zoomIn);
   const zoomOut = useEditor((s) => s.zoomOut);
   const fitToView = useEditor((s) => s.fitToView);
@@ -142,7 +206,7 @@ export function Toolbar() {
   return (
     <div className="flex h-full w-14 flex-col items-center gap-1 overflow-y-auto border-r border-panel-border bg-panel py-2">
       <AutoLayersDialog open={sliceOpen} onClose={() => setSliceOpen(false)} />
-      {TOOLS.map((t) => (
+      {(documentKind === "sprite" ? [...TOOLS, ...SPRITE_TOOLS] : TOOLS).map((t) => (
         <IconButton
           key={t.id}
           icon={t.icon}
@@ -153,6 +217,18 @@ export function Toolbar() {
           onClick={() => setTool(t.id)}
         />
       ))}
+
+      {documentKind === "sprite" && (
+        <>
+          <div className="my-1 h-px w-7 shrink-0 bg-panel-border" />
+          <IconButton icon={<FlipHorizontal2 size={18} />} label="Flip horizontal" description="Flip the cel, or the selection, left to right." onClick={() => flipSprite("horizontal")} />
+          <IconButton icon={<FlipVertical2 size={18} />} label="Flip vertical" description="Flip the cel, or the selection, top to bottom." onClick={() => flipSprite("vertical")} />
+          <IconButton icon={<RotateCw size={18} />} label="Rotate 90°" description="Rotate the cel 90 degrees clockwise." onClick={() => rotateSprite(1)} />
+          <IconButton icon={<RotateCcw size={18} />} label="Rotate 180°" description="Rotate the cel 180 degrees." onClick={() => rotateSprite(2)} />
+          <IconButton icon={<Grid3x3 size={18} />} label="Pixel grid" description="Show or hide lines between pixels. Visible from 400% zoom up." onClick={() => toggleSpriteGrid("pixel")} />
+          <IconButton icon={<LayoutGrid size={18} />} label="Cell grid" description="Show or hide the cell grid." onClick={() => toggleSpriteGrid("cell")} />
+        </>
+      )}
 
       <div className="my-1 h-px w-7 shrink-0 bg-panel-border" />
 

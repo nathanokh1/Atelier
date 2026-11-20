@@ -1,4 +1,4 @@
-import { Layer, RasterSource } from "../layer-graph";
+import { CanvasSize, Layer, LayerGraph, RasterSource } from "../layer-graph";
 import { Command } from "./command";
 
 /** Replace a layer's raster bitmap (paint strokes, adjustments, erase, etc.). */
@@ -160,4 +160,34 @@ interface TextGraphLike extends LayerGraphLike {
       >
     >,
   ): void;
+}
+
+/** Replace sprite pixels, and the canvas size when a rotation changes it. One undo step. */
+export class ReplaceSpritePixelsCommand implements Command {
+  readonly label: string;
+  private beforeSource?: RasterSource;
+  private beforeCanvas?: CanvasSize;
+
+  constructor(
+    private readonly layerId: string,
+    private readonly after: RasterSource,
+    private readonly canvas: CanvasSize | null,
+    label: string,
+  ) {
+    this.label = label;
+  }
+
+  execute(graph: LayerGraph): void {
+    const layer = graph.getLayer(this.layerId);
+    if (!layer) return;
+    if (!this.beforeSource) this.beforeSource = layer.source;
+    if (this.canvas && !this.beforeCanvas) this.beforeCanvas = graph.getCanvasSize();
+    graph.replaceLayerSource(this.layerId, this.after);
+    if (this.canvas) graph.setCanvasSize(this.canvas);
+  }
+
+  undo(graph: LayerGraph): void {
+    if (this.beforeSource) graph.replaceLayerSource(this.layerId, this.beforeSource);
+    if (this.beforeCanvas) graph.setCanvasSize(this.beforeCanvas);
+  }
 }

@@ -1,4 +1,6 @@
+import { wandMask } from "../file-io/pixel-ops";
 import { combineMask, featherMask, magicWandMask } from "../file-io/selection";
+import { readPixelImage } from "./pixel-draw-tool";
 import { PointerSample, Tool, ToolContext } from "./tool";
 
 export interface WandStyle {
@@ -40,6 +42,14 @@ export class MagicWandTool implements Tool {
     const layer = ctx.graph.getActiveLayer();
     if (!layer || layer.type === "group") return;
     const doc = ctx.renderer.screenToDocument(pt.canvasX, pt.canvasY);
+    if (ctx.graph.getKind() === "sprite") {
+      const image = readPixelImage(layer.source);
+      const x = Math.floor((doc.x - layer.transform.x) / (layer.transform.scaleX || 1));
+      const y = Math.floor((doc.y - layer.transform.y) / (layer.transform.scaleY || 1));
+      const data = wandMask(image, x, y, true);
+      ctx.renderer.setSelectionMask({ width: image.width, height: image.height, data });
+      return;
+    }
     const canvas = await ctx.renderer.extractLayerCanvas(layer.id);
     const c2d = canvas.getContext("2d", { willReadFrequently: true });
     if (!c2d) return;
